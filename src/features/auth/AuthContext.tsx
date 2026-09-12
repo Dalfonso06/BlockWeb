@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useState, type ReactNode } from 'react'
 import { clearStoredToken, getStoredToken, setStoredToken } from '@/api/client'
 import type { User } from '@/types/models'
+import { getUser } from '@/features/users/api'
 import * as authApi from './api'
 import type { LoginCredentials, RegisterPayload } from './types'
 
@@ -52,8 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    authApi
-      .fetchUser(userId)
+    getUser(userId)
       .then(setUser)
       .catch(() => clearStoredToken())
       .finally(() => setIsLoading(false))
@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error('Received an invalid token from the server')
     }
 
-    setUser(await authApi.fetchUser(userId))
+    setUser(await getUser(userId))
   }, [])
 
   const register = useCallback(async (payload: RegisterPayload) => {

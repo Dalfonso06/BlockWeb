@@ -14,7 +14,3 @@ export function login(credentials: LoginCredentials): Promise<TokenResponse> {
 export function register(payload: RegisterPayload): Promise<User> {
   return request<User>('/auth/register', { method: 'POST', body: payload, auth: false })
 }
-
-export function fetchUser(id: number): Promise<User> {
-  return request<User>(`/users/${id}`)
-}
