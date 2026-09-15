@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react'
+import { CloseIcon } from '@/icons'
 
 interface ModalProps {
   isOpen: boolean
@@ -40,7 +41,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             aria-label="Close"
             className="text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
           >
-            ✕
+            <CloseIcon className="h-4 w-4" />
           </button>
         </div>
         <div className="mt-4">{children}</div>

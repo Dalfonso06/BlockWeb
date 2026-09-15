@@ -1,15 +1,18 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import type { IconComponent } from '@/icons'
+import { HomeIcon } from '@/icons'
 import { useAuth } from '@/features/auth/useAuth'
 import { SettingsModal } from '@/components/layout/SettingsModal'
+import { SidebarNavLink } from '@/components/layout/SidebarNavLink'
 import { Avatar } from '@/components/ui/Avatar'
 
 interface NavItem {
   label: string
   to: string
+  icon: IconComponent
 }
 
-const navItems: NavItem[] = [{ label: 'Dashboard', to: '/' }]
+const navItems: NavItem[] = [{ label: 'Dashboard', to: '/', icon: HomeIcon }]
 
 export function Sidebar() {
   const { user } = useAuth()
@@ -21,18 +24,7 @@ export function Sidebar() {
 
       <nav className="mt-8 flex flex-col gap-1">
         {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end
-            className={({ isActive }) =>
-              `rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                isActive ? 'bg-white/15 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'
-              }`
-            }
-          >
-            {item.label}
-          </NavLink>
+          <SidebarNavLink key={item.to} to={item.to} label={item.label} icon={item.icon} />
         ))}
       </nav>
 
