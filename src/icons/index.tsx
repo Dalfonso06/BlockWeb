@@ -1,5 +1,5 @@
 import type { IconBaseProps, IconType } from 'react-icons'
-import { FaHouse, FaUser, FaXmark } from 'react-icons/fa6'
+import { FaCalendarDays, FaClipboardList, FaHouse, FaUser, FaXmark } from 'react-icons/fa6'
 
 // Central icon registry: every icon the app uses is named here once, by what
 // it means in the UI rather than which icon-set glyph it happens to be.
@@ -14,3 +14,5 @@ export type IconComponent = IconType
 export const HomeIcon: IconComponent = FaHouse
 export const UserIcon: IconComponent = FaUser
 export const CloseIcon: IconComponent = FaXmark
+export const TrainingPlanIcon: IconComponent = FaClipboardList
+export const CalendarIcon: IconComponent = FaCalendarDays

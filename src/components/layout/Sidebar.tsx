@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { IconComponent } from '@/icons'
-import { HomeIcon } from '@/icons'
+import { CalendarIcon, HomeIcon, TrainingPlanIcon } from '@/icons'
 import { useAuth } from '@/features/auth/useAuth'
 import { SettingsModal } from '@/components/layout/SettingsModal'
 import { SidebarNavLink } from '@/components/layout/SidebarNavLink'
@@ -12,7 +12,11 @@ interface NavItem {
   icon: IconComponent
 }
 
-const navItems: NavItem[] = [{ label: 'Dashboard', to: '/', icon: HomeIcon }]
+const navItems: NavItem[] = [
+  { label: 'Dashboard', to: '/', icon: HomeIcon },
+  { label: 'Training Plan', to: '/training-plan', icon: TrainingPlanIcon },
+  { label: 'Calendar', to: '/calendar', icon: CalendarIcon },
+]
 
 export function Sidebar() {
   const { user } = useAuth()
