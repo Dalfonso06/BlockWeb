@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-accent: #aa3bff;
-  --color-accent-dark: #c084fc;
+  --color-accent: #141c28;
+  --color-accent-dark: #9db4d4;
   --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
 }
 

@@ -67,7 +67,7 @@ export function LoginPage() {
 
         <p className="text-sm text-neutral-500">
           No account?{' '}
-          <Link to="/register" className="text-accent">
+          <Link to="/register" className="text-accent dark:text-accent-dark">
             Register
           </Link>
         </p>
