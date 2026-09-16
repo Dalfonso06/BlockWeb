@@ -62,3 +62,20 @@ export interface WorkoutType {
   id: number
   name: string
 }
+
+export type WeatherCondition =
+  | 'clear'
+  | 'partly_cloudy'
+  | 'cloudy'
+  | 'fog'
+  | 'drizzle'
+  | 'rain'
+  | 'snow'
+  | 'thunderstorm'
+
+export interface Weather {
+  latitude: number
+  longitude: number
+  temperature: number
+  condition: WeatherCondition
+}
