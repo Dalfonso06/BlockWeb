@@ -4,6 +4,8 @@ import { AppShell } from '@/components/layout/AppShell'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
 import { DashboardPage } from '@/pages/DashboardPage'
+import { TrainingPlanPage } from '@/pages/TrainingPlanPage'
+import { CalendarPage } from '@/pages/CalendarPage'
 
 export function AppRoutes() {
   return (
@@ -17,6 +19,22 @@ export function AppRoutes() {
           element={
             <AppShell>
               <DashboardPage />
+            </AppShell>
+          }
+        />
+        <Route
+          path="/training-plan"
+          element={
+            <AppShell>
+              <TrainingPlanPage />
+            </AppShell>
+          }
+        />
+        <Route
+          path="/calendar"
+          element={
+            <AppShell>
+              <CalendarPage />
             </AppShell>
           }
         />

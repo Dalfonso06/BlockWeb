@@ -46,12 +46,34 @@ Run from the project root:
 - Prefer local component composition over complex shared state patterns unless a feature truly requires them.
 - Keep styling localized when possible, but use global design tokens or CSS variables where consistent dashboard theming is needed.
 
+## Icons
+- General UI icons come from `react-icons/fa6` (Font Awesome 6). Weather condition icons are the one documented exception and come from the Meteocons static icon set instead. Both are routed through the central registry at `src/icons/index.tsx` — never import from `react-icons/fa6`, Meteocons, or any other icon source directly in components, pages, or features.
+- Before adding an icon, check `src/icons/index.tsx` for an existing semantically-named export (e.g. `HomeIcon`, `UserIcon`, `CloseIcon`) that already fits the use case, and reuse it rather than adding a duplicate.
+- If nothing existing fits: general UI icons come from `react-icons/fa6`; icons representing a weather condition (mirroring `WeatherCondition` in `types/models.ts`) come from Meteocons' static set. Add a new semantically-named export in `src/icons/index.tsx` (named for what it means in the UI, not the underlying glyph name), then import and use that new export at the call site.
+- This keeps icon usage swappable from one place — changing icon sets, or replacing a glyph with a hand-rolled SVG later, only ever touches `src/icons/index.tsx`.
+
 ## Code quality expectations
 - Make the smallest valid change.
 - Preserve existing architecture unless the task clearly requires a refactor.
 - Validate with the relevant command after edits, especially `npm run build` or `npm run lint`.
 - Do not add unrelated libraries or UI frameworks without explicit approval.
 - Favor clarity and maintainability over cleverness when working with training-plan logic.
+
+## Backend Reference
+A read-only backend subagent is available for frontend development.
+
+### When to use it
+Use the backend subagent when frontend work requires:
+- Understanding existing FastAPI endpoints
+- Checking API request/response schemas
+- Understanding backend models or relationships
+- Verifying authentication/API behavior
+- Checking existing backend business logic
+- Determining how frontend features should integrate with the backend
+
+The backend subagent is read-only and should be used for investigation/reference only.
+
+Do not modify backend files as part of frontend work unless explicitly requested.
 
 ## Working style for agents
 - Inspect the current dashboard structure before editing major sections.

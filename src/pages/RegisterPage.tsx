@@ -84,7 +84,7 @@ export function RegisterPage() {
 
         <p className="text-sm text-neutral-500">
           Already have an account?{' '}
-          <Link to="/login" className="text-accent">
+          <Link to="/login" className="text-accent dark:text-accent-dark">
             Log in
           </Link>
         </p>
