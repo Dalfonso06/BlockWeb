@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { IconComponent } from '@/icons'
-import { CalendarIcon, HomeIcon, TrainingPlanIcon } from '@/icons'
+import { CalendarIcon, HomeIcon, LogoIcon, TrainingPlanIcon } from '@/icons'
 import { useAuth } from '@/features/auth/useAuth'
 import { SettingsModal } from '@/components/layout/SettingsModal'
 import { SidebarNavLink } from '@/components/layout/SidebarNavLink'
@@ -24,7 +24,10 @@ export function Sidebar() {
 
   return (
     <aside className="flex w-60 flex-col bg-accent px-4 py-6 text-white">
-      <span className="px-2 text-lg font-semibold">Block</span>
+      <div className="flex items-center gap-4 px-2">
+        <LogoIcon className="h-5 w-5" />
+        <span className="text-lg font-semibold">Block</span>
+      </div>
 
       <nav className="mt-8 flex flex-col gap-1">
         {navItems.map((item) => (

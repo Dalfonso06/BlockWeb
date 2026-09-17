@@ -1,5 +1,5 @@
 import type { IconBaseProps, IconType } from 'react-icons'
-import { FaCalendarDays, FaClipboardList, FaHouse, FaUser, FaXmark } from 'react-icons/fa6'
+import { FaCalendarDays, FaClipboardList, FaCube, FaHouse, FaUser, FaXmark } from 'react-icons/fa6'
 
 import clearSvg from '@meteocons/svg-static/fill/clear-day.svg?raw'
 import partlyCloudySvg from '@meteocons/svg-static/fill/partly-cloudy-day.svg?raw'
@@ -25,6 +25,8 @@ export const UserIcon: IconComponent = FaUser
 export const CloseIcon: IconComponent = FaXmark
 export const TrainingPlanIcon: IconComponent = FaClipboardList
 export const CalendarIcon: IconComponent = FaCalendarDays
+// Temporary placeholder logo — swap for the real brand mark when one exists.
+export const LogoIcon: IconComponent = FaCube
 
 // Weather condition icons come from Meteocons' static SVG set instead of
 // react-icons/fa6 — a documented exception (see CLAUDE.md). The "monochrome"
