@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Dark mode is class-gated (`.dark` ancestor) instead of following
+   prefers-color-scheme. Nothing adds the `.dark` class today, so the
+   app stays light regardless of OS/browser theme; existing `dark:`
+   utilities are left in place for a future manual toggle. */
+@custom-variant dark (&:is(.dark *));
+
 @theme {
   --color-accent: #141c28;
   --color-accent-dark: #9db4d4;
@@ -7,7 +13,7 @@
 }
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 }
 
 body {
