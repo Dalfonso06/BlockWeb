@@ -1,4 +1,5 @@
-import { formatDate } from '@/lib/date'
+import { formatDateRange } from '@/lib/date'
+import { TrainingBlockStatusPill } from './TrainingBlockStatusPill'
 import type { TrainingBlock } from '@/types/models'
 
 interface TrainingBlockSummaryProps {
@@ -10,7 +11,7 @@ export function TrainingBlockSummary({ block }: TrainingBlockSummaryProps) {
     <div className="rounded-md border border-neutral-200 px-4 py-3 dark:border-neutral-800">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">{block.name}</h1>
-        <span className="text-sm text-neutral-500">{block.status}</span>
+        <TrainingBlockStatusPill status={block.status} />
       </div>
 
       {block.description && (
@@ -18,7 +19,7 @@ export function TrainingBlockSummary({ block }: TrainingBlockSummaryProps) {
       )}
 
       <p className="mt-2 text-sm text-neutral-500">
-        {formatDate(block.start_date)} – {formatDate(block.end_date)}
+        {formatDateRange(block.start_date, block.end_date, true)}
       </p>
     </div>
   )

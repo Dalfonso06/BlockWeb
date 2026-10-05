@@ -6,6 +6,7 @@ import { EditIcon, DeleteIcon } from '@/icons'
 import { formatDate } from '@/lib/date'
 import { useDeleteTrainingBlock, useTrainingBlocks } from '@/features/training-blocks/hooks'
 import { TrainingBlockFormModal } from '@/features/training-blocks/TrainingBlockFormModal'
+import { TrainingBlockStatusPill } from '@/features/training-blocks/TrainingBlockStatusPill'
 import type { TrainingBlock } from '@/types/models'
 
 export function TrainingPlanPage() {
@@ -59,11 +60,12 @@ export function TrainingPlanPage() {
                 onClick={() => navigate(`/training-plan/${block.id}`)}
                 className="flex cursor-pointer items-center justify-between rounded-md border border-neutral-200 px-4 py-3 text-sm hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900"
               >
-                <div>
+                <div className="flex items-center gap-2">
                   <span className="font-medium text-neutral-900 dark:text-neutral-100">{block.name}</span>
-                  <span className="ml-2 text-neutral-500">
-                    {formatDate(block.start_date)} – {formatDate(block.end_date)} · {block.status}
+                  <span className="text-neutral-500">
+                    {formatDate(block.start_date)} – {formatDate(block.end_date)}
                   </span>
+                  <TrainingBlockStatusPill status={block.status} />
                 </div>
 
                 <div className="flex items-center gap-3">

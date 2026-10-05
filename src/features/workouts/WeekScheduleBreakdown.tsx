@@ -1,5 +1,6 @@
 import { enumerateDates, toDateKey } from '@/lib/date'
 import { useWorkoutTypes } from '@/features/workout-types/hooks'
+import { TrainingWeekHeader } from '@/features/training-weeks/TrainingWeekHeader'
 import { useWorkouts } from './hooks'
 import { DayScheduleRow } from './DayScheduleRow'
 import type { TrainingWeek, Workout } from '@/types/models'
@@ -34,15 +35,19 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
   const dates = enumerateDates(week.start_date, week.end_date)
 
   return (
-    <div className="rounded-md border border-neutral-200 px-4 dark:border-neutral-800">
-      {dates.map((date) => (
-        <DayScheduleRow
-          key={date}
-          date={date}
-          workouts={workoutsByDate.get(date) ?? []}
-          workoutTypeNameById={workoutTypeNameById}
-        />
-      ))}
+    <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
+      <TrainingWeekHeader week={week} workoutCount={workouts?.length ?? 0} />
+
+      <div className="px-4">
+        {dates.map((date) => (
+          <DayScheduleRow
+            key={date}
+            date={date}
+            workouts={workoutsByDate.get(date) ?? []}
+            workoutTypeNameById={workoutTypeNameById}
+          />
+        ))}
+      </div>
     </div>
   )
 }

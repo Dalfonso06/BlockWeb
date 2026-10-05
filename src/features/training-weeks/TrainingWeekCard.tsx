@@ -1,4 +1,4 @@
-import { formatDate } from '@/lib/date'
+import { formatDateRange } from '@/lib/date'
 import type { TrainingWeek } from '@/types/models'
 
 interface TrainingWeekCardProps {
@@ -25,9 +25,7 @@ export function TrainingWeekCard({ week, isSelected, onSelect }: TrainingWeekCar
           {week.name ?? week.focus}
         </div>
       )}
-      <div className="mt-1 text-xs text-neutral-500">
-        {formatDate(week.start_date)} – {formatDate(week.end_date)}
-      </div>
+      <div className="mt-1 text-xs text-neutral-500">{formatDateRange(week.start_date, week.end_date)}</div>
     </button>
   )
 }
