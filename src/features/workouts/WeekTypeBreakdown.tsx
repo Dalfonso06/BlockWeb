@@ -36,7 +36,7 @@ export function WeekTypeBreakdown({ workouts, workoutTypeNameById }: WeekTypeBre
   const totalMinutes = rows.reduce((sum, row) => sum + row.totalMinutes, 0)
 
   return (
-    <div className="w-64 shrink-0 rounded-md border border-neutral-200 p-4 dark:border-neutral-800">
+    <div className="rounded-md border border-neutral-200 p-4 dark:border-neutral-800">
       <h3 className="flex items-center gap-2 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
         <ChartIcon className="h-3.5 w-3.5" />
         Week Breakdown

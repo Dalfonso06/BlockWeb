@@ -7,16 +7,16 @@ import { useDeleteWorkout, useWorkouts } from './hooks'
 import { DayScheduleRow } from './DayScheduleRow'
 import { WorkoutFormModal } from './WorkoutFormModal'
 import { WeekTypeBreakdown } from './WeekTypeBreakdown'
+import { WeekQuickActions } from './WeekQuickActions'
 import type { TrainingWeek, Workout } from '@/types/models'
 
 interface WeekScheduleBreakdownProps {
   week: TrainingWeek
-  isEditMode: boolean
 }
 
-type WorkoutModalState = { mode: 'add'; date: string } | { mode: 'edit'; workout: Workout } | null
+type WorkoutModalState = { mode: 'add' } | { mode: 'edit'; workout: Workout } | null
 
-export function WeekScheduleBreakdown({ week, isEditMode }: WeekScheduleBreakdownProps) {
+export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
   const [workoutModalState, setWorkoutModalState] = useState<WorkoutModalState>(null)
   const [deletingWorkout, setDeletingWorkout] = useState<Workout | null>(null)
 
@@ -56,7 +56,7 @@ export function WeekScheduleBreakdown({ week, isEditMode }: WeekScheduleBreakdow
     workoutModalState === null
       ? 'closed'
       : workoutModalState.mode === 'add'
-        ? `add-${workoutModalState.date}`
+        ? 'add'
         : `edit-${workoutModalState.workout.id}`
 
   return (
@@ -76,8 +76,6 @@ export function WeekScheduleBreakdown({ week, isEditMode }: WeekScheduleBreakdow
                 date={date}
                 workouts={workoutsByDate.get(date) ?? []}
                 workoutTypeNameById={workoutTypeNameById}
-                isEditMode={isEditMode}
-                onAddWorkout={(d) => setWorkoutModalState({ mode: 'add', date: d })}
                 onEditWorkout={(workout) => setWorkoutModalState({ mode: 'edit', workout })}
                 onDeleteWorkout={(workout) => setDeletingWorkout(workout)}
               />
@@ -85,21 +83,17 @@ export function WeekScheduleBreakdown({ week, isEditMode }: WeekScheduleBreakdow
           </div>
         </div>
 
-        <WeekTypeBreakdown workouts={workouts ?? []} workoutTypeNameById={workoutTypeNameById} />
+        <div className="flex w-64 shrink-0 flex-col gap-4">
+          <WeekTypeBreakdown workouts={workouts ?? []} workoutTypeNameById={workoutTypeNameById} />
+          <WeekQuickActions onAddWorkout={() => setWorkoutModalState({ mode: 'add' })} />
+        </div>
       </div>
 
       <WorkoutFormModal
         key={modalKey}
         isOpen={workoutModalState !== null}
         onClose={() => setWorkoutModalState(null)}
-        trainingWeekId={week.id}
-        date={
-          workoutModalState?.mode === 'add'
-            ? workoutModalState.date
-            : workoutModalState?.mode === 'edit'
-              ? toDateKey(workoutModalState.workout.scheduled_start)
-              : ''
-        }
+        week={week}
         workout={workoutModalState?.mode === 'edit' ? workoutModalState.workout : null}
       />
 

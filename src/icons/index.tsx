@@ -5,6 +5,7 @@ import {
   FaClipboardList,
   FaClock,
   FaCube,
+  FaEllipsis,
   FaHouse,
   FaPen,
   FaPlus,
@@ -42,6 +43,7 @@ export const DeleteIcon: IconComponent = FaTrash
 export const AddIcon: IconComponent = FaPlus
 export const ChartIcon: IconComponent = FaChartSimple
 export const ClockIcon: IconComponent = FaClock
+export const MoreIcon: IconComponent = FaEllipsis
 // Temporary placeholder logo — swap for the real brand mark when one exists.
 export const LogoIcon: IconComponent = FaCube
 

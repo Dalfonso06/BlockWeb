@@ -12,7 +12,6 @@ export function TrainingBlockDetailPage() {
   const { blockId } = useParams<{ blockId: string }>()
   const id = Number(blockId)
   const [selectedWeekId, setSelectedWeekId] = useState<number | null>(null)
-  const [isEditMode, setIsEditMode] = useState(false)
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false)
 
   const { data: block, isLoading: isLoadingBlock } = useTrainingBlock(id)
@@ -32,16 +31,12 @@ export function TrainingBlockDetailPage() {
           ← Training Plan
         </Link>
 
-        <Button variant={isEditMode ? 'secondary' : 'primary'} onClick={() => setIsEditMode((v) => !v)}>
-          {isEditMode ? 'Done' : 'Edit Plan'}
-        </Button>
+        <Button onClick={() => setIsBlockModalOpen(true)}>Edit Plan</Button>
       </div>
 
       <div className="mt-4">
         {isLoadingBlock && <p className="text-sm text-neutral-500">Loading…</p>}
-        {!isLoadingBlock && block && (
-          <TrainingBlockSummary block={block} isEditMode={isEditMode} onEdit={() => setIsBlockModalOpen(true)} />
-        )}
+        {!isLoadingBlock && block && <TrainingBlockSummary block={block} />}
       </div>
 
       <div className="mt-6">
@@ -56,7 +51,7 @@ export function TrainingBlockDetailPage() {
       </div>
 
       <div className="mt-6">
-        {activeWeek && <WeekScheduleBreakdown week={activeWeek} isEditMode={isEditMode} />}
+        {activeWeek && <WeekScheduleBreakdown week={activeWeek} />}
       </div>
 
       {block && (

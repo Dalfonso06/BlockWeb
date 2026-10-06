@@ -1,5 +1,4 @@
 import { formatMonthDay, formatWeekday } from '@/lib/date'
-import { AddIcon } from '@/icons'
 import { WorkoutSummary } from './WorkoutSummary'
 import type { Workout } from '@/types/models'
 
@@ -7,8 +6,6 @@ interface DayScheduleRowProps {
   date: string
   workouts: Workout[]
   workoutTypeNameById: Record<number, string>
-  isEditMode: boolean
-  onAddWorkout: (date: string) => void
   onEditWorkout: (workout: Workout) => void
   onDeleteWorkout: (workout: Workout) => void
 }
@@ -17,8 +14,6 @@ export function DayScheduleRow({
   date,
   workouts,
   workoutTypeNameById,
-  isEditMode,
-  onAddWorkout,
   onEditWorkout,
   onDeleteWorkout,
 }: DayScheduleRowProps) {
@@ -33,15 +28,6 @@ export function DayScheduleRow({
         {workouts.length === 0 ? (
           <div className="flex h-full items-center gap-3">
             <p className="text-sm text-neutral-400">Rest day</p>
-            {isEditMode && (
-              <button
-                onClick={() => onAddWorkout(date)}
-                className="flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
-              >
-                <AddIcon className="h-3 w-3" />
-                Add workout
-              </button>
-            )}
           </div>
         ) : (
           <div className="space-y-2">
@@ -51,20 +37,11 @@ export function DayScheduleRow({
                   key={workout.id}
                   workout={workout}
                   workoutTypeName={workoutTypeNameById[workout.workout_type_id] ?? 'Workout'}
-                  onEdit={isEditMode ? () => onEditWorkout(workout) : undefined}
-                  onDelete={isEditMode ? () => onDeleteWorkout(workout) : undefined}
+                  onEdit={() => onEditWorkout(workout)}
+                  onDelete={() => onDeleteWorkout(workout)}
                 />
               ))}
             </div>
-            {isEditMode && (
-              <button
-                onClick={() => onAddWorkout(date)}
-                className="flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
-              >
-                <AddIcon className="h-3 w-3" />
-                Add workout
-              </button>
-            )}
           </div>
         )}
       </div>

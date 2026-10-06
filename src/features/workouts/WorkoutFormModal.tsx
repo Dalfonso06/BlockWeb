@@ -2,35 +2,39 @@ import { useState } from 'react'
 import { FormModal } from '@/components/ui/FormModal'
 import { Button } from '@/components/ui/Button'
 import { ApiError } from '@/api/client'
+import { enumerateDates, formatMonthDay, formatWeekday } from '@/lib/date'
 import { useWorkoutTypes, useCreateWorkoutType } from '@/features/workout-types/hooks'
 import { useCreateWorkout, useUpdateWorkout } from './hooks'
-import type { DistanceUnit, Workout, WorkoutStatus } from '@/types/models'
+import type { DistanceUnit, TrainingWeek, Workout, WorkoutStatus } from '@/types/models'
 
 interface WorkoutFormModalProps {
   isOpen: boolean
   onClose: () => void
-  trainingWeekId: number
-  date: string
+  week: TrainingWeek
   workout?: Workout | null
 }
 
 const STATUS_OPTIONS: WorkoutStatus[] = ['planned', 'completed', 'skipped']
 const UNIT_OPTIONS: DistanceUnit[] = ['km', 'mi', 'm', 'yd']
 
-const emptyForm = {
-  workout_type_id: '',
-  title: '',
-  time: '',
-  planned_duration: '',
-  planned_distance: '',
-  unit: '' as DistanceUnit | '',
-  status: 'planned' as WorkoutStatus,
+function emptyForm(date: string) {
+  return {
+    workout_type_id: '',
+    title: '',
+    date,
+    time: '',
+    planned_duration: '',
+    planned_distance: '',
+    unit: '' as DistanceUnit | '',
+    status: 'planned' as WorkoutStatus,
+  }
 }
 
 function formFromWorkout(workout: Workout) {
   return {
     workout_type_id: String(workout.workout_type_id),
     title: workout.title,
+    date: workout.scheduled_start.slice(0, 10),
     time: workout.scheduled_start.slice(11, 16),
     planned_duration: workout.planned_duration != null ? String(workout.planned_duration) : '',
     planned_distance: workout.planned_distance != null ? String(workout.planned_distance) : '',
@@ -39,17 +43,18 @@ function formFromWorkout(workout: Workout) {
   }
 }
 
-export function WorkoutFormModal({ isOpen, onClose, trainingWeekId, date, workout = null }: WorkoutFormModalProps) {
+export function WorkoutFormModal({ isOpen, onClose, week, workout = null }: WorkoutFormModalProps) {
   const isEditing = workout !== null
-  const [form, setForm] = useState(workout ? formFromWorkout(workout) : emptyForm)
+  const [form, setForm] = useState(workout ? formFromWorkout(workout) : emptyForm(week.start_date))
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isAddingType, setIsAddingType] = useState(false)
   const [newTypeName, setNewTypeName] = useState('')
 
+  const dayOptions = enumerateDates(week.start_date, week.end_date)
   const { data: workoutTypes } = useWorkoutTypes()
   const createWorkoutType = useCreateWorkoutType()
-  const createWorkout = useCreateWorkout(trainingWeekId)
-  const updateWorkout = useUpdateWorkout(workout?.id ?? -1, trainingWeekId)
+  const createWorkout = useCreateWorkout(week.id)
+  const updateWorkout = useUpdateWorkout(workout?.id ?? -1, week.id)
 
   function handleClose() {
     setSubmitError(null)
@@ -71,9 +76,9 @@ export function WorkoutFormModal({ isOpen, onClose, trainingWeekId, date, workou
     setSubmitError(null)
 
     const payload = {
-      training_week_id: trainingWeekId,
+      training_week_id: week.id,
       workout_type_id: Number(form.workout_type_id),
-      scheduled_start: `${date}T${form.time}:00`,
+      scheduled_start: `${form.date}T${form.time}:00`,
       title: form.title,
       planned_duration: form.planned_duration ? Number(form.planned_duration) : null,
       planned_distance: form.planned_distance ? Number(form.planned_distance) : null,
@@ -165,18 +170,39 @@ export function WorkoutFormModal({ isOpen, onClose, trainingWeekId, date, workou
           />
         </div>
 
-        <div className="space-y-1">
-          <label htmlFor="workout-time" className="text-sm">
-            Time
-          </label>
-          <input
-            id="workout-time"
-            type="time"
-            value={form.time}
-            onChange={(e) => setForm({ ...form, time: e.target.value })}
-            required
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
-          />
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <label htmlFor="workout-date" className="text-sm">
+              Day
+            </label>
+            <select
+              id="workout-date"
+              value={form.date}
+              onChange={(e) => setForm({ ...form, date: e.target.value })}
+              required
+              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+            >
+              {dayOptions.map((d) => (
+                <option key={d} value={d}>
+                  {formatWeekday(d)}, {formatMonthDay(d)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-1">
+            <label htmlFor="workout-time" className="text-sm">
+              Time
+            </label>
+            <input
+              id="workout-time"
+              type="time"
+              value={form.time}
+              onChange={(e) => setForm({ ...form, time: e.target.value })}
+              required
+              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
