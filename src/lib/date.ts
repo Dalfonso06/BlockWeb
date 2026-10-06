@@ -60,3 +60,25 @@ export function enumerateDates(startIsoDate: string, endIsoDate: string): string
 export function toDateKey(isoDateTime: string): string {
   return isoDateTime.slice(0, 10)
 }
+
+// Formats a total number of minutes as a short duration, e.g. "3h 45m", "45m", "2h".
+export function formatDuration(totalMinutes: number): string {
+  if (totalMinutes <= 0) return '0m'
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+  if (hours === 0) return `${minutes}m`
+  if (minutes === 0) return `${hours}h`
+  return `${hours}h ${minutes}m`
+}
+
+// Formats the time-of-day portion of a full ISO datetime string, e.g. "7:00 AM".
+// Reads the "HH:MM" substring directly rather than parsing a Date, so it
+// reflects the wall-clock time that was entered, independent of any
+// timezone offset suffix on the string.
+export function formatTime(isoDateTime: string): string {
+  const [hourStr, minuteStr] = isoDateTime.slice(11, 16).split(':')
+  const hour = Number(hourStr)
+  const period = hour >= 12 ? 'PM' : 'AM'
+  const displayHour = hour % 12 === 0 ? 12 : hour % 12
+  return `${displayHour}:${minuteStr} ${period}`
+}
