@@ -45,15 +45,17 @@ export function DayScheduleRow({
           </div>
         ) : (
           <div className="space-y-2">
-            {workouts.map((workout) => (
-              <WorkoutSummary
-                key={workout.id}
-                workout={workout}
-                workoutTypeName={workoutTypeNameById[workout.workout_type_id] ?? 'Workout'}
-                onEdit={isEditMode ? () => onEditWorkout(workout) : undefined}
-                onDelete={isEditMode ? () => onDeleteWorkout(workout) : undefined}
-              />
-            ))}
+            <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
+              {workouts.map((workout) => (
+                <WorkoutSummary
+                  key={workout.id}
+                  workout={workout}
+                  workoutTypeName={workoutTypeNameById[workout.workout_type_id] ?? 'Workout'}
+                  onEdit={isEditMode ? () => onEditWorkout(workout) : undefined}
+                  onDelete={isEditMode ? () => onDeleteWorkout(workout) : undefined}
+                />
+              ))}
+            </div>
             {isEditMode && (
               <button
                 onClick={() => onAddWorkout(date)}

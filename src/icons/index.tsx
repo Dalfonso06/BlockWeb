@@ -1,5 +1,17 @@
 import type { IconBaseProps, IconType } from 'react-icons'
-import { FaCalendarDays, FaClipboardList, FaCube, FaHouse, FaPen, FaPlus, FaTrash, FaUser, FaXmark } from 'react-icons/fa6'
+import {
+  FaCalendarDays,
+  FaChartSimple,
+  FaClipboardList,
+  FaClock,
+  FaCube,
+  FaHouse,
+  FaPen,
+  FaPlus,
+  FaTrash,
+  FaUser,
+  FaXmark,
+} from 'react-icons/fa6'
 
 import clearSvg from '@meteocons/svg-static/fill/clear-day.svg?raw'
 import partlyCloudySvg from '@meteocons/svg-static/fill/partly-cloudy-day.svg?raw'
@@ -28,6 +40,8 @@ export const CalendarIcon: IconComponent = FaCalendarDays
 export const EditIcon: IconComponent = FaPen
 export const DeleteIcon: IconComponent = FaTrash
 export const AddIcon: IconComponent = FaPlus
+export const ChartIcon: IconComponent = FaChartSimple
+export const ClockIcon: IconComponent = FaClock
 // Temporary placeholder logo — swap for the real brand mark when one exists.
 export const LogoIcon: IconComponent = FaCube
 

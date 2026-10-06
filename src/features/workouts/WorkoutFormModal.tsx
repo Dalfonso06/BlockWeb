@@ -106,18 +106,6 @@ export function WorkoutFormModal({ isOpen, onClose, trainingWeekId, date, workou
       submitLabel={isEditing ? 'Save' : 'Add'}
     >
       <div className="space-y-4">
-        <div className="space-y-1">
-          <label htmlFor="workout-title" className="text-sm">
-            Title
-          </label>
-          <input
-            id="workout-title"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            required
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
-          />
-        </div>
 
         <div className="space-y-1">
           <label htmlFor="workout-type" className="text-sm">
@@ -162,6 +150,19 @@ export function WorkoutFormModal({ isOpen, onClose, trainingWeekId, date, workou
               </Button>
             </div>
           )}
+        </div>
+        
+        <div className="space-y-1">
+          <label htmlFor="workout-title" className="text-sm">
+            Title
+          </label>
+          <input
+            id="workout-title"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            required
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+          />
         </div>
 
         <div className="space-y-1">

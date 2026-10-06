@@ -6,6 +6,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { useDeleteWorkout, useWorkouts } from './hooks'
 import { DayScheduleRow } from './DayScheduleRow'
 import { WorkoutFormModal } from './WorkoutFormModal'
+import { WeekTypeBreakdown } from './WeekTypeBreakdown'
 import type { TrainingWeek, Workout } from '@/types/models'
 
 interface WeekScheduleBreakdownProps {
@@ -59,26 +60,32 @@ export function WeekScheduleBreakdown({ week, isEditMode }: WeekScheduleBreakdow
         : `edit-${workoutModalState.workout.id}`
 
   return (
-    <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
-      <TrainingWeekHeader
-        week={week}
-        workoutCount={workouts?.length ?? 0}
-        plannedVolumeMinutes={plannedVolumeMinutes}
-      />
-
-      <div className="px-4">
-        {dates.map((date) => (
-          <DayScheduleRow
-            key={date}
-            date={date}
-            workouts={workoutsByDate.get(date) ?? []}
-            workoutTypeNameById={workoutTypeNameById}
-            isEditMode={isEditMode}
-            onAddWorkout={(d) => setWorkoutModalState({ mode: 'add', date: d })}
-            onEditWorkout={(workout) => setWorkoutModalState({ mode: 'edit', workout })}
-            onDeleteWorkout={(workout) => setDeletingWorkout(workout)}
+    <div>
+      <div className="flex items-start gap-4">
+        <div className="min-w-0 flex-1 rounded-md border border-neutral-200 dark:border-neutral-800">
+          <TrainingWeekHeader
+            week={week}
+            workoutCount={workouts?.length ?? 0}
+            plannedVolumeMinutes={plannedVolumeMinutes}
           />
-        ))}
+
+          <div className="px-4">
+            {dates.map((date) => (
+              <DayScheduleRow
+                key={date}
+                date={date}
+                workouts={workoutsByDate.get(date) ?? []}
+                workoutTypeNameById={workoutTypeNameById}
+                isEditMode={isEditMode}
+                onAddWorkout={(d) => setWorkoutModalState({ mode: 'add', date: d })}
+                onEditWorkout={(workout) => setWorkoutModalState({ mode: 'edit', workout })}
+                onDeleteWorkout={(workout) => setDeletingWorkout(workout)}
+              />
+            ))}
+          </div>
+        </div>
+
+        <WeekTypeBreakdown workouts={workouts ?? []} workoutTypeNameById={workoutTypeNameById} />
       </div>
 
       <WorkoutFormModal
