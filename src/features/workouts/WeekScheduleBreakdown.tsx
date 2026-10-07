@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { enumerateDates, toDateKey } from '@/lib/date'
 import { useWorkoutTypes } from '@/features/workout-types/hooks'
 import { TrainingWeekHeader } from '@/features/training-weeks/TrainingWeekHeader'
+import { useTrainingWeekBreakdown } from '@/features/training-weeks/hooks'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { useDeleteWorkout, useWorkouts } from './hooks'
 import { DayScheduleRow } from './DayScheduleRow'
@@ -22,9 +23,10 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
 
   const { data: workouts, isLoading: isLoadingWorkouts } = useWorkouts(week.id)
   const { data: workoutTypes, isLoading: isLoadingWorkoutTypes } = useWorkoutTypes()
+  const { data: breakdown, isLoading: isLoadingBreakdown } = useTrainingWeekBreakdown(week.id)
   const deleteWorkout = useDeleteWorkout(week.id)
 
-  if (isLoadingWorkouts || isLoadingWorkoutTypes) {
+  if (isLoadingWorkouts || isLoadingWorkoutTypes || isLoadingBreakdown) {
     return <p className="text-sm text-neutral-500">Loading…</p>
   }
 
@@ -44,7 +46,6 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
   }
 
   const dates = enumerateDates(week.start_date, week.end_date)
-  const plannedVolumeMinutes = (workouts ?? []).reduce((sum, w) => sum + (w.planned_duration ?? 0), 0)
 
   async function handleConfirmDeleteWorkout() {
     if (!deletingWorkout) return
@@ -66,7 +67,7 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
           <TrainingWeekHeader
             week={week}
             workoutCount={workouts?.length ?? 0}
-            plannedVolumeMinutes={plannedVolumeMinutes}
+            plannedVolumeMinutes={breakdown?.total_planned_duration_minutes ?? 0}
           />
 
           <div className="px-4">
@@ -84,7 +85,10 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
         </div>
 
         <div className="flex w-64 shrink-0 flex-col gap-4">
-          <WeekTypeBreakdown workouts={workouts ?? []} workoutTypeNameById={workoutTypeNameById} />
+          <WeekTypeBreakdown
+            workoutTypes={breakdown?.workout_types ?? []}
+            totalMinutes={breakdown?.total_planned_duration_minutes ?? 0}
+          />
           <WeekQuickActions onAddWorkout={() => setWorkoutModalState({ mode: 'add' })} />
         </div>
       </div>
