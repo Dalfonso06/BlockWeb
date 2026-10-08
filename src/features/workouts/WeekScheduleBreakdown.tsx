@@ -15,7 +15,7 @@ interface WeekScheduleBreakdownProps {
   week: TrainingWeek
 }
 
-type WorkoutModalState = { mode: 'add' } | { mode: 'edit'; workout: Workout } | null
+type WorkoutModalState = { mode: 'add'; date?: string } | { mode: 'edit'; workout: Workout } | null
 
 export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
   const [workoutModalState, setWorkoutModalState] = useState<WorkoutModalState>(null)
@@ -57,7 +57,7 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
     workoutModalState === null
       ? 'closed'
       : workoutModalState.mode === 'add'
-        ? 'add'
+        ? `add-${workoutModalState.date ?? 'any'}`
         : `edit-${workoutModalState.workout.id}`
 
   return (
@@ -77,6 +77,7 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
                 date={date}
                 workouts={workoutsByDate.get(date) ?? []}
                 workoutTypeNameById={workoutTypeNameById}
+                onAddWorkout={(d) => setWorkoutModalState({ mode: 'add', date: d })}
                 onEditWorkout={(workout) => setWorkoutModalState({ mode: 'edit', workout })}
                 onDeleteWorkout={(workout) => setDeletingWorkout(workout)}
               />
@@ -84,7 +85,7 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
           </div>
         </div>
 
-        <div className="flex w-64 shrink-0 flex-col gap-4">
+        <div className="sticky top-4 flex w-64 shrink-0 flex-col gap-4 self-start">
           <WeekTypeBreakdown
             workoutTypes={breakdown?.workout_types ?? []}
             totalMinutes={breakdown?.total_planned_duration_minutes ?? 0}
@@ -99,6 +100,7 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
         onClose={() => setWorkoutModalState(null)}
         week={week}
         workout={workoutModalState?.mode === 'edit' ? workoutModalState.workout : null}
+        date={workoutModalState?.mode === 'add' ? workoutModalState.date : undefined}
       />
 
       <ConfirmDialog

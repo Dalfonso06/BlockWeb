@@ -12,6 +12,7 @@ interface WorkoutFormModalProps {
   onClose: () => void
   week: TrainingWeek
   workout?: Workout | null
+  date?: string
 }
 
 const STATUS_OPTIONS: WorkoutStatus[] = ['planned', 'completed', 'skipped']
@@ -43,9 +44,10 @@ function formFromWorkout(workout: Workout) {
   }
 }
 
-export function WorkoutFormModal({ isOpen, onClose, week, workout = null }: WorkoutFormModalProps) {
+export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }: WorkoutFormModalProps) {
   const isEditing = workout !== null
-  const [form, setForm] = useState(workout ? formFromWorkout(workout) : emptyForm(week.start_date))
+  const isDateLocked = !isEditing && date !== undefined
+  const [form, setForm] = useState(workout ? formFromWorkout(workout) : emptyForm(date ?? week.start_date))
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isAddingType, setIsAddingType] = useState(false)
   const [newTypeName, setNewTypeName] = useState('')
@@ -170,25 +172,27 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null }: Work
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1">
-            <label htmlFor="workout-date" className="text-sm">
-              Day
-            </label>
-            <select
-              id="workout-date"
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-              required
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
-            >
-              {dayOptions.map((d) => (
-                <option key={d} value={d}>
-                  {formatWeekday(d)}, {formatMonthDay(d)}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className={isDateLocked ? '' : 'grid grid-cols-2 gap-3'}>
+          {!isDateLocked && (
+            <div className="space-y-1">
+              <label htmlFor="workout-date" className="text-sm">
+                Day
+              </label>
+              <select
+                id="workout-date"
+                value={form.date}
+                onChange={(e) => setForm({ ...form, date: e.target.value })}
+                required
+                className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+              >
+                {dayOptions.map((d) => (
+                  <option key={d} value={d}>
+                    {formatWeekday(d)}, {formatMonthDay(d)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="space-y-1">
             <label htmlFor="workout-time" className="text-sm">
