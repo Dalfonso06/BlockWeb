@@ -5,6 +5,7 @@ import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { TrainingPlanPage } from '@/pages/TrainingPlanPage'
+import { TrainingBlockDetailPage } from '@/pages/TrainingBlockDetailPage'
 import { CalendarPage } from '@/pages/CalendarPage'
 
 export function AppRoutes() {
@@ -27,6 +28,14 @@ export function AppRoutes() {
           element={
             <AppShell>
               <TrainingPlanPage />
+            </AppShell>
+          }
+        />
+        <Route
+          path="/training-plan/:blockId"
+          element={
+            <AppShell>
+              <TrainingBlockDetailPage />
             </AppShell>
           }
         />

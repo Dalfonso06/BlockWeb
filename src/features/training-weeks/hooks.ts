@@ -5,6 +5,7 @@ import type { TrainingWeekCreate, TrainingWeekUpdate } from './types'
 export const trainingWeekKeys = {
   byBlock: (trainingBlockId: number) => ['training-weeks', { trainingBlockId }] as const,
   detail: (id: number) => ['training-weeks', id] as const,
+  breakdown: (id: number) => ['training-weeks', id, 'breakdown'] as const,
 }
 
 export function useTrainingWeeks(trainingBlockId: number) {
@@ -18,6 +19,13 @@ export function useTrainingWeek(id: number) {
   return useQuery({
     queryKey: trainingWeekKeys.detail(id),
     queryFn: () => trainingWeeksApi.getTrainingWeek(id),
+  })
+}
+
+export function useTrainingWeekBreakdown(id: number) {
+  return useQuery({
+    queryKey: trainingWeekKeys.breakdown(id),
+    queryFn: () => trainingWeeksApi.getTrainingWeekBreakdown(id),
   })
 }
 

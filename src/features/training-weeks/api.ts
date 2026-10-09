@@ -1,6 +1,6 @@
 import { request } from '@/api/client'
 import type { TrainingWeek } from '@/types/models'
-import type { TrainingWeekCreate, TrainingWeekUpdate } from './types'
+import type { TrainingWeekBreakdownResponse, TrainingWeekCreate, TrainingWeekUpdate } from './types'
 
 export function listTrainingWeeks(trainingBlockId: number): Promise<TrainingWeek[]> {
   return request<TrainingWeek[]>(`/training-weeks/?training_block_id=${trainingBlockId}`)
@@ -20,4 +20,8 @@ export function updateTrainingWeek(id: number, payload: TrainingWeekUpdate): Pro
 
 export function deleteTrainingWeek(id: number): Promise<void> {
   return request<void>(`/training-weeks/${id}`, { method: 'DELETE' })
+}
+
+export function getTrainingWeekBreakdown(id: number): Promise<TrainingWeekBreakdownResponse> {
+  return request<TrainingWeekBreakdownResponse>(`/training-weeks/${id}/breakdown`)
 }

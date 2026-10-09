@@ -23,7 +23,7 @@ export function Sidebar() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   return (
-    <aside className="flex w-60 flex-col bg-accent px-4 py-6 text-white">
+    <aside className="flex h-full w-60 shrink-0 flex-col bg-accent px-4 py-6 text-white">
       <div className="flex items-center gap-4 px-2">
         <LogoIcon className="h-5 w-5" />
         <span className="text-lg font-semibold">Block</span>
