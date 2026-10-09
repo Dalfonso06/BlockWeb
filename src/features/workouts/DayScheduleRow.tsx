@@ -1,7 +1,7 @@
 import { formatMonthDay, formatWeekday } from '@/lib/date'
 import { AddIcon } from '@/icons'
 import { WorkoutSummary } from './WorkoutSummary'
-import type { Workout } from '@/types/models'
+import type { Workout, WorkoutStatus } from '@/types/models'
 
 interface DayScheduleRowProps {
   date: string
@@ -10,6 +10,7 @@ interface DayScheduleRowProps {
   onAddWorkout: (date: string) => void
   onEditWorkout: (workout: Workout) => void
   onDeleteWorkout: (workout: Workout) => void
+  onUpdateWorkoutStatus: (workout: Workout, status: WorkoutStatus) => void
 }
 
 export function DayScheduleRow({
@@ -19,6 +20,7 @@ export function DayScheduleRow({
   onAddWorkout,
   onEditWorkout,
   onDeleteWorkout,
+  onUpdateWorkoutStatus,
 }: DayScheduleRowProps) {
   return (
     <div className="group flex gap-4 border-b border-neutral-100 px-2 py-3 last:border-b-0 dark:border-neutral-900 dark:hover:bg-neutral-900">
@@ -51,6 +53,7 @@ export function DayScheduleRow({
                   workoutTypeName={workoutTypeNameById[workout.workout_type_id] ?? 'Workout'}
                   onEdit={() => onEditWorkout(workout)}
                   onDelete={() => onDeleteWorkout(workout)}
+                  onUpdateStatus={(status) => onUpdateWorkoutStatus(workout, status)}
                 />
               ))}
             </div>

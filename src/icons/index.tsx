@@ -2,13 +2,17 @@ import type { IconBaseProps, IconType } from 'react-icons'
 import {
   FaCalendarDays,
   FaChartSimple,
+  FaCircleCheck,
   FaClipboardList,
   FaClock,
   FaCube,
   FaEllipsis,
   FaHouse,
+  FaMinus,
   FaPen,
   FaPlus,
+  FaRegCircle,
+  FaCheck,
   FaTrash,
   FaUser,
   FaXmark,
@@ -44,6 +48,10 @@ export const AddIcon: IconComponent = FaPlus
 export const ChartIcon: IconComponent = FaChartSimple
 export const ClockIcon: IconComponent = FaClock
 export const MoreIcon: IconComponent = FaEllipsis
+export const CircleIcon: IconComponent = FaRegCircle
+export const CheckCircleIcon: IconComponent = FaCircleCheck
+export const CheckIcon: IconComponent = FaCheck
+export const MinusIcon: IconComponent = FaMinus
 // Temporary placeholder logo — swap for the real brand mark when one exists.
 export const LogoIcon: IconComponent = FaCube
 

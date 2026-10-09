@@ -4,7 +4,7 @@ import { useWorkoutTypes } from '@/features/workout-types/hooks'
 import { TrainingWeekHeader } from '@/features/training-weeks/TrainingWeekHeader'
 import { useTrainingWeekBreakdown } from '@/features/training-weeks/hooks'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
-import { useDeleteWorkout, useWorkouts } from './hooks'
+import { useDeleteWorkout, useUpdateWorkoutStatus, useWorkouts } from './hooks'
 import { DayScheduleRow } from './DayScheduleRow'
 import { WorkoutFormModal } from './WorkoutFormModal'
 import { WeekTypeBreakdown } from './WeekTypeBreakdown'
@@ -25,6 +25,7 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
   const { data: workoutTypes, isLoading: isLoadingWorkoutTypes } = useWorkoutTypes()
   const { data: breakdown, isLoading: isLoadingBreakdown } = useTrainingWeekBreakdown(week.id)
   const deleteWorkout = useDeleteWorkout(week.id)
+  const updateWorkoutStatus = useUpdateWorkoutStatus(week.id)
 
   if (isLoadingWorkouts || isLoadingWorkoutTypes || isLoadingBreakdown) {
     return <p className="text-sm text-neutral-500">Loading…</p>
@@ -80,6 +81,7 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
                 onAddWorkout={(d) => setWorkoutModalState({ mode: 'add', date: d })}
                 onEditWorkout={(workout) => setWorkoutModalState({ mode: 'edit', workout })}
                 onDeleteWorkout={(workout) => setDeletingWorkout(workout)}
+                onUpdateWorkoutStatus={(workout, status) => updateWorkoutStatus.mutate({ id: workout.id, status })}
               />
             ))}
           </div>

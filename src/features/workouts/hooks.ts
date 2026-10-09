@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { trainingWeekKeys } from '@/features/training-weeks/hooks'
 import * as workoutsApi from './api'
+import type { WorkoutStatus } from '@/types/models'
 import type { WorkoutCreate, WorkoutUpdate } from './types'
 
 export const workoutKeys = {
@@ -38,6 +39,19 @@ export function useUpdateWorkout(id: number, trainingWeekId: number) {
   return useMutation({
     mutationFn: (payload: WorkoutUpdate) => workoutsApi.updateWorkout(id, payload),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: workoutKeys.byWeek(trainingWeekId) })
+      queryClient.invalidateQueries({ queryKey: workoutKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: trainingWeekKeys.breakdown(trainingWeekId) })
+    },
+  })
+}
+
+export function useUpdateWorkoutStatus(trainingWeekId: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, status }: { id: number; status: WorkoutStatus }) =>
+      workoutsApi.updateWorkout(id, { status }),
+    onSuccess: (_data, { id }) => {
       queryClient.invalidateQueries({ queryKey: workoutKeys.byWeek(trainingWeekId) })
       queryClient.invalidateQueries({ queryKey: workoutKeys.detail(id) })
       queryClient.invalidateQueries({ queryKey: trainingWeekKeys.breakdown(trainingWeekId) })
