@@ -3,7 +3,8 @@ import { FormModal } from '@/components/ui/FormModal'
 import { Button } from '@/components/ui/Button'
 import { ApiError } from '@/api/client'
 import { enumerateDates, formatMonthDay, formatWeekday } from '@/lib/date'
-import { useWorkoutTypes, useCreateWorkoutType } from '@/features/workout-types/hooks'
+import { convertMetersTo, convertToMeters } from '@/lib/distance'
+import { useWorkoutTypes, useWorkoutTypeUnits, useCreateWorkoutType } from '@/features/workout-types/hooks'
 import { useCreateWorkout, useUpdateWorkout } from './hooks'
 import type { DistanceUnit, TrainingWeek, Workout, WorkoutStatus } from '@/types/models'
 
@@ -16,7 +17,6 @@ interface WorkoutFormModalProps {
 }
 
 const STATUS_OPTIONS: WorkoutStatus[] = ['planned', 'completed', 'skipped']
-const UNIT_OPTIONS: DistanceUnit[] = ['km', 'mi', 'm', 'yd']
 
 function emptyForm(date: string) {
   return {
@@ -26,20 +26,19 @@ function emptyForm(date: string) {
     time: '',
     planned_duration: '',
     planned_distance: '',
-    unit: '' as DistanceUnit | '',
     status: 'planned' as WorkoutStatus,
   }
 }
 
-function formFromWorkout(workout: Workout) {
+function formFromWorkout(workout: Workout, unit: DistanceUnit | null) {
   return {
     workout_type_id: String(workout.workout_type_id),
     title: workout.title,
     date: workout.scheduled_start.slice(0, 10),
     time: workout.scheduled_start.slice(11, 16),
     planned_duration: workout.planned_duration != null ? String(workout.planned_duration) : '',
-    planned_distance: workout.planned_distance != null ? String(workout.planned_distance) : '',
-    unit: workout.unit ?? ('' as DistanceUnit | ''),
+    planned_distance:
+      workout.planned_distance != null ? String(convertMetersTo(workout.planned_distance, unit ?? 'm')) : '',
     status: workout.status,
   }
 }
@@ -47,16 +46,29 @@ function formFromWorkout(workout: Workout) {
 export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }: WorkoutFormModalProps) {
   const isEditing = workout !== null
   const isDateLocked = !isEditing && date !== undefined
-  const [form, setForm] = useState(workout ? formFromWorkout(workout) : emptyForm(date ?? week.start_date))
+
+  const dayOptions = enumerateDates(week.start_date, week.end_date)
+  const { data: workoutTypes } = useWorkoutTypes()
+  const { data: workoutTypeUnits } = useWorkoutTypeUnits()
+  const createWorkoutType = useCreateWorkoutType()
+  const createWorkout = useCreateWorkout(week.id)
+  const updateWorkout = useUpdateWorkout(workout?.id ?? -1, week.id)
+
+  const workoutTypeUnitById = Object.fromEntries(
+    (workoutTypeUnits ?? []).map((workoutType) => [workoutType.id, workoutType.unit]),
+  )
+
+  const [form, setForm] = useState(() =>
+    workout
+      ? formFromWorkout(workout, workoutTypeUnitById[workout.workout_type_id] ?? null)
+      : emptyForm(date ?? week.start_date),
+  )
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isAddingType, setIsAddingType] = useState(false)
   const [newTypeName, setNewTypeName] = useState('')
 
-  const dayOptions = enumerateDates(week.start_date, week.end_date)
-  const { data: workoutTypes } = useWorkoutTypes()
-  const createWorkoutType = useCreateWorkoutType()
-  const createWorkout = useCreateWorkout(week.id)
-  const updateWorkout = useUpdateWorkout(workout?.id ?? -1, week.id)
+  const resolvedUnit = workoutTypeUnitById[Number(form.workout_type_id)] ?? null
+  const distanceUnitLabel = resolvedUnit ?? 'm'
 
   function handleClose() {
     setSubmitError(null)
@@ -83,8 +95,9 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
       scheduled_start: `${form.date}T${form.time}:00`,
       title: form.title,
       planned_duration: form.planned_duration ? Number(form.planned_duration) : null,
-      planned_distance: form.planned_distance ? Number(form.planned_distance) : null,
-      unit: form.unit || null,
+      planned_distance: form.planned_distance
+        ? convertToMeters(Number(form.planned_distance), resolvedUnit ?? 'm')
+        : null,
       status: form.status,
     }
 
@@ -243,40 +256,19 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1">
-            <label htmlFor="workout-distance" className="text-sm">
-              Distance
-            </label>
-            <input
-              id="workout-distance"
-              type="number"
-              min="0"
-              step="0.01"
-              value={form.planned_distance}
-              onChange={(e) => setForm({ ...form, planned_distance: e.target.value })}
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label htmlFor="workout-unit" className="text-sm">
-              Unit
-            </label>
-            <select
-              id="workout-unit"
-              value={form.unit}
-              onChange={(e) => setForm({ ...form, unit: e.target.value as DistanceUnit | '' })}
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
-            >
-              <option value="">—</option>
-              {UNIT_OPTIONS.map((unit) => (
-                <option key={unit} value={unit}>
-                  {unit}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="space-y-1">
+          <label htmlFor="workout-distance" className="text-sm">
+            Distance ({distanceUnitLabel})
+          </label>
+          <input
+            id="workout-distance"
+            type="number"
+            min="0"
+            step="0.01"
+            value={form.planned_distance}
+            onChange={(e) => setForm({ ...form, planned_distance: e.target.value })}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+          />
         </div>
       </div>
     </FormModal>

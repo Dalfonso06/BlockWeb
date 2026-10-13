@@ -50,7 +50,6 @@ export interface Workout {
   description: string | null
   planned_duration: number | null
   planned_distance: number | null
-  unit: DistanceUnit | null
   status: WorkoutStatus
   completed_at: string | null
   notes: string | null

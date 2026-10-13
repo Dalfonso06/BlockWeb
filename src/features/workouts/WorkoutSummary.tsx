@@ -1,20 +1,28 @@
 import { formatTime } from '@/lib/date'
+import { formatDistance } from '@/lib/distance'
 import { ActionMenu } from '@/components/ui/ActionMenu'
 import { CheckIcon, CircleIcon, MinusIcon } from '@/icons'
 import { getWorkoutTypeColor } from '@/features/workout-types/workoutTypeColors'
-import type { Workout, WorkoutStatus } from '@/types/models'
+import type { DistanceUnit, Workout, WorkoutStatus } from '@/types/models'
 
 interface WorkoutSummaryProps {
   workout: Workout
   workoutTypeName: string
+  unit: DistanceUnit | null
   onEdit?: () => void
   onDelete?: () => void
   onUpdateStatus?: (status: WorkoutStatus) => void
 }
 
-export function WorkoutSummary({ workout, workoutTypeName, onEdit, onDelete, onUpdateStatus }: WorkoutSummaryProps) {
-  const distanceLabel =
-    workout.planned_distance != null ? `${workout.planned_distance}${workout.unit ?? ''}` : '—'
+export function WorkoutSummary({
+  workout,
+  workoutTypeName,
+  unit,
+  onEdit,
+  onDelete,
+  onUpdateStatus,
+}: WorkoutSummaryProps) {
+  const distanceLabel = workout.planned_distance != null ? formatDistance(workout.planned_distance, unit) : '—'
   const isCompleted = workout.status === 'completed'
   const isSkipped = workout.status === 'skipped'
 

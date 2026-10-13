@@ -7,10 +7,21 @@ export const workoutTypeKeys = {
   detail: (id: number) => ['workout-types', id] as const,
 }
 
+export const workoutTypeUnitKeys = {
+  all: ['workout-type-units'] as const,
+}
+
 export function useWorkoutTypes() {
   return useQuery({
     queryKey: workoutTypeKeys.all,
     queryFn: workoutTypesApi.listWorkoutTypes,
+  })
+}
+
+export function useWorkoutTypeUnits() {
+  return useQuery({
+    queryKey: workoutTypeUnitKeys.all,
+    queryFn: workoutTypesApi.getWorkoutTypeUnits,
   })
 }
 
