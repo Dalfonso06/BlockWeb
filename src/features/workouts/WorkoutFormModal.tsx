@@ -69,6 +69,7 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
 
   const resolvedUnit = workoutTypeUnitById[Number(form.workout_type_id)] ?? null
   const distanceUnitLabel = resolvedUnit ?? 'm'
+  const hasDistance = resolvedUnit !== null
 
   function handleClose() {
     setSubmitError(null)
@@ -95,9 +96,10 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
       scheduled_start: `${form.date}T${form.time}:00`,
       title: form.title,
       planned_duration: form.planned_duration ? Number(form.planned_duration) : null,
-      planned_distance: form.planned_distance
-        ? convertToMeters(Number(form.planned_distance), resolvedUnit ?? 'm')
-        : null,
+      planned_distance:
+        hasDistance && form.planned_distance
+          ? convertToMeters(Number(form.planned_distance), resolvedUnit ?? 'm')
+          : null,
       status: form.status,
     }
 
@@ -256,20 +258,22 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
           </div>
         </div>
 
-        <div className="space-y-1">
-          <label htmlFor="workout-distance" className="text-sm">
-            Distance ({distanceUnitLabel})
-          </label>
-          <input
-            id="workout-distance"
-            type="number"
-            min="0"
-            step="0.01"
-            value={form.planned_distance}
-            onChange={(e) => setForm({ ...form, planned_distance: e.target.value })}
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
-          />
-        </div>
+        {hasDistance && (
+          <div className="space-y-1">
+            <label htmlFor="workout-distance" className="text-sm">
+              Distance ({distanceUnitLabel})
+            </label>
+            <input
+              id="workout-distance"
+              type="number"
+              min="0"
+              step="0.01"
+              value={form.planned_distance}
+              onChange={(e) => setForm({ ...form, planned_distance: e.target.value })}
+              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+            />
+          </div>
+        )}
       </div>
     </FormModal>
   )
