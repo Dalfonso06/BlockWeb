@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FormModal } from '@/components/ui/FormModal'
 import { Button } from '@/components/ui/Button'
+import { Select } from '@/components/ui/Select'
 import { ApiError } from '@/api/client'
 import { enumerateDates, formatMonthDay, formatWeekday } from '@/lib/date'
 import { convertMetersTo, convertToMeters } from '@/lib/distance'
@@ -135,12 +136,12 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
           </label>
           {!isAddingType ? (
             <div className="flex gap-2">
-              <select
+              <Select
                 id="workout-type"
                 value={form.workout_type_id}
                 onChange={(e) => setForm({ ...form, workout_type_id: e.target.value })}
                 required
-                className="flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+                className="flex-1"
               >
                 <option value="" disabled>
                   Select a type
@@ -150,7 +151,7 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
                     {type.name}
                   </option>
                 ))}
-              </select>
+              </Select>
               <Button type="button" variant="secondary" onClick={() => setIsAddingType(true)}>
                 + New
               </Button>
@@ -193,19 +194,18 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
               <label htmlFor="workout-date" className="text-sm">
                 Day
               </label>
-              <select
+              <Select
                 id="workout-date"
                 value={form.date}
                 onChange={(e) => setForm({ ...form, date: e.target.value })}
                 required
-                className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
               >
                 {dayOptions.map((d) => (
                   <option key={d} value={d}>
                     {formatWeekday(d)}, {formatMonthDay(d)}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           )}
 
@@ -243,18 +243,17 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
             <label htmlFor="workout-status" className="text-sm">
               Status
             </label>
-            <select
+            <Select
               id="workout-status"
               value={form.status}
               onChange={(e) => setForm({ ...form, status: e.target.value as WorkoutStatus })}
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
             >
               {STATUS_OPTIONS.map((status) => (
                 <option key={status} value={status}>
                   {status[0].toUpperCase() + status.slice(1)}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
         </div>
 

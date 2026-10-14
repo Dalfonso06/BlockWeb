@@ -6,9 +6,11 @@ interface ModalProps {
   onClose: () => void
   title: string
   children: ReactNode
+  maxWidth?: string
+  height?: string
 }
 
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-sm', height = '' }: ModalProps) {
   useEffect(() => {
     if (!isOpen) return
 
@@ -32,7 +34,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg dark:bg-neutral-900"
+        className={`flex w-full ${maxWidth} ${height} flex-col rounded-lg bg-white p-6 shadow-lg dark:bg-neutral-900`}
       >
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{title}</h2>
@@ -44,7 +46,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             <CloseIcon className="h-4 w-4" />
           </button>
         </div>
-        <div className="mt-4">{children}</div>
+        <div className="mt-4 min-h-0 flex-1">{children}</div>
       </div>
     </div>
   )
