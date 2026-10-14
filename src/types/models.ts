@@ -60,6 +60,7 @@ export interface Workout {
 export interface WorkoutType {
   id: number
   name: string
+  default_unit: DistanceUnit | null
 }
 
 export type WeatherCondition =

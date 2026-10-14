@@ -26,6 +26,18 @@ export function useSetUnitPreference() {
   })
 }
 
+export function useResetUnitPreferences() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (workoutTypeIds: number[]) =>
+      Promise.all(workoutTypeIds.map((workoutTypeId) => unitPreferencesApi.deleteUnitPreference(workoutTypeId))),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: unitPreferenceKeys.all })
+      queryClient.invalidateQueries({ queryKey: workoutTypeUnitKeys.all })
+    },
+  })
+}
+
 export function useDeleteUnitPreference() {
   const queryClient = useQueryClient()
   return useMutation({

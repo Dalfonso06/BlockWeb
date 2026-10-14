@@ -1,116 +1,101 @@
 import { useState } from 'react'
-import { Button } from '@/components/ui/Button'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
-import { Select } from '@/components/ui/Select'
 import { useWorkoutTypes } from '@/features/workout-types/hooks'
-import { useUnitPreferences, useSetUnitPreference, useDeleteUnitPreference } from '@/features/unit-preferences/hooks'
-import { UnitPreferenceRow } from './UnitPreferenceRow'
-import type { UserUnitPreference } from '@/features/unit-preferences/types'
-import type { DistanceUnit } from '@/types/models'
-
-const UNIT_OPTIONS: DistanceUnit[] = ['km', 'mi', 'm', 'yd']
+import {
+  useUnitPreferences,
+  useSetUnitPreference,
+  useDeleteUnitPreference,
+  useResetUnitPreferences,
+} from '@/features/unit-preferences/hooks'
+import { WorkoutTypeUnitRow } from './WorkoutTypeUnitRow'
+import type { DistanceUnit, WorkoutType } from '@/types/models'
 
 export function PreferencesTab() {
   const { data: workoutTypes, isLoading: isLoadingWorkoutTypes } = useWorkoutTypes()
   const { data: preferences, isLoading: isLoadingPreferences } = useUnitPreferences()
   const setPreference = useSetUnitPreference()
   const deletePreference = useDeleteUnitPreference()
+  const resetPreferences = useResetUnitPreferences()
 
-  const [deletingPreference, setDeletingPreference] = useState<UserUnitPreference | null>(null)
-  const [newWorkoutTypeId, setNewWorkoutTypeId] = useState('')
-  const [newUnit, setNewUnit] = useState<DistanceUnit>('km')
+  const [isConfirmingReset, setIsConfirmingReset] = useState(false)
 
   if (isLoadingWorkoutTypes || isLoadingPreferences) {
     return <p className="text-sm text-neutral-500">Loading…</p>
   }
 
-  const workoutTypeNameById = Object.fromEntries(
-    (workoutTypes ?? []).map((workoutType) => [workoutType.id, workoutType.name]),
+  const preferenceByTypeId = Object.fromEntries(
+    (preferences ?? []).map((preference) => [preference.workout_type_id, preference]),
   )
 
-  const preferredTypeIds = new Set((preferences ?? []).map((preference) => preference.workout_type_id))
-  const availableWorkoutTypes = (workoutTypes ?? []).filter((workoutType) => !preferredTypeIds.has(workoutType.id))
+  // Workout types with no default unit and no explicit preference don't
+  // track distance at all (e.g. "Lift") — leave them out of the list.
+  const unitTrackedWorkoutTypes = (workoutTypes ?? []).filter(
+    (workoutType) => workoutType.default_unit != null || preferenceByTypeId[workoutType.id] != null,
+  )
 
-  async function handleConfirmDelete() {
-    if (!deletingPreference) return
-    await deletePreference.mutateAsync(deletingPreference.workout_type_id)
-    setDeletingPreference(null)
+  function handleChangeUnit(workoutType: WorkoutType, newUnit: DistanceUnit) {
+    // If the chosen unit matches the workout type's own default, there's no
+    // need for an explicit override row — delete it (if one exists) instead
+    // of writing a preference that just duplicates the default.
+    if (newUnit === workoutType.default_unit) {
+      if (preferenceByTypeId[workoutType.id]) {
+        deletePreference.mutate(workoutType.id)
+      }
+      return
+    }
+
+    setPreference.mutate({ workoutTypeId: workoutType.id, unit: newUnit })
   }
 
-  function handleAddPreference() {
-    if (!newWorkoutTypeId) return
-    setPreference.mutate({ workoutTypeId: Number(newWorkoutTypeId), unit: newUnit })
-    setNewWorkoutTypeId('')
-    setNewUnit('km')
+  async function handleConfirmReset() {
+    await resetPreferences.mutateAsync((preferences ?? []).map((preference) => preference.workout_type_id))
+    setIsConfirmingReset(false)
   }
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">Units</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">Units</h3>
 
-      {(preferences ?? []).length === 0 ? (
-        <p className="mt-2 text-sm text-neutral-500">You haven't set any unit preferences yet.</p>
+        <button
+          type="button"
+          onClick={() => setIsConfirmingReset(true)}
+          disabled={(preferences ?? []).length === 0}
+          className="text-sm text-accent hover:underline disabled:cursor-not-allowed disabled:text-neutral-400 disabled:no-underline dark:text-accent-dark dark:disabled:text-neutral-600"
+        >
+          Reset to defaults
+        </button>
+      </div>
+
+      {unitTrackedWorkoutTypes.length === 0 ? (
+        <p className="mt-2 text-sm text-neutral-500">No workout types with a unit yet.</p>
       ) : (
         <div className="mt-3 divide-y divide-neutral-100 dark:divide-neutral-900">
-          {(preferences ?? []).map((preference) => (
-            <UnitPreferenceRow
-              key={preference.id}
-              workoutTypeName={workoutTypeNameById[preference.workout_type_id] ?? 'Workout'}
-              unit={preference.unit}
-              onChangeUnit={(unit) => setPreference.mutate({ workoutTypeId: preference.workout_type_id, unit })}
-              onDelete={() => setDeletingPreference(preference)}
-            />
-          ))}
+          {unitTrackedWorkoutTypes.map((workoutType) => {
+            const preference = preferenceByTypeId[workoutType.id]
+            const unit = preference?.unit ?? workoutType.default_unit ?? 'm'
+
+            return (
+              <WorkoutTypeUnitRow
+                key={workoutType.id}
+                workoutTypeName={workoutType.name}
+                unit={unit}
+                isDefault={!preference}
+                onChangeUnit={(newUnit) => handleChangeUnit(workoutType, newUnit)}
+              />
+            )
+          })}
         </div>
-      )}
-
-      {availableWorkoutTypes.length > 0 ? (
-        <div className="mt-4 flex items-center gap-2 border-t border-neutral-100 pt-4 dark:border-neutral-900">
-          <Select
-            value={newWorkoutTypeId}
-            onChange={(e) => setNewWorkoutTypeId(e.target.value)}
-            className="flex-1"
-          >
-            <option value="" disabled>
-              Select a workout type
-            </option>
-            {availableWorkoutTypes.map((workoutType) => (
-              <option key={workoutType.id} value={workoutType.id}>
-                {workoutType.name}
-              </option>
-            ))}
-          </Select>
-
-          <Select value={newUnit} onChange={(e) => setNewUnit(e.target.value as DistanceUnit)}>
-            {UNIT_OPTIONS.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </Select>
-
-          <Button type="button" onClick={handleAddPreference} disabled={!newWorkoutTypeId}>
-            Add
-          </Button>
-        </div>
-      ) : (
-        <p className="mt-4 border-t border-neutral-100 pt-4 text-sm text-neutral-500 dark:border-neutral-900">
-          Every workout type already has a preference set.
-        </p>
       )}
 
       <ConfirmDialog
-        isOpen={deletingPreference !== null}
-        onClose={() => setDeletingPreference(null)}
-        onConfirm={handleConfirmDelete}
-        title="Delete Unit Preference"
-        description={
-          deletingPreference
-            ? `Remove your ${workoutTypeNameById[deletingPreference.workout_type_id] ?? 'this workout type'} unit preference? It will fall back to the workout type's default.`
-            : undefined
-        }
-        confirmLabel="Delete"
-        isConfirming={deletePreference.isPending}
+        isOpen={isConfirmingReset}
+        onClose={() => setIsConfirmingReset(false)}
+        onConfirm={handleConfirmReset}
+        title="Reset Unit Preferences"
+        description="This clears every unit you've customized, reverting each workout type back to its default unit."
+        confirmLabel="Reset"
+        isConfirming={resetPreferences.isPending}
       />
     </div>
   )
