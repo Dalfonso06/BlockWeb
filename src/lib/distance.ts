@@ -1,10 +1,10 @@
-import type { DistanceUnit } from '@/types/models'
+import { DistanceUnit } from '@/types/models'
 
 const METERS_PER_UNIT: Record<DistanceUnit, number> = {
-  m: 1,
-  km: 1000,
-  mi: 1609.344,
-  yd: 0.9144,
+  [DistanceUnit.M]: 1,
+  [DistanceUnit.Km]: 1000,
+  [DistanceUnit.Mi]: 1609.344,
+  [DistanceUnit.Yd]: 0.9144,
 }
 
 // Converts a meters value (the only unit workouts are stored in) to the given unit.
@@ -21,6 +21,6 @@ export function convertToMeters(value: number, unit: DistanceUnit): number {
 // Formats a meters value for display in the given unit, e.g. "3.11mi". Falls
 // back to meters when no unit could be resolved (no preference, no default).
 export function formatDistance(meters: number, unit: DistanceUnit | null): string {
-  const resolvedUnit = unit ?? 'm'
+  const resolvedUnit = unit ?? DistanceUnit.M
   return `${convertMetersTo(meters, resolvedUnit)}${resolvedUnit}`
 }

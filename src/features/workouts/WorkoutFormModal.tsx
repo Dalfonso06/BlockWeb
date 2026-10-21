@@ -7,7 +7,8 @@ import { enumerateDates, formatMonthDay, formatWeekday } from '@/lib/date'
 import { convertMetersTo, convertToMeters } from '@/lib/distance'
 import { useWorkoutTypes, useWorkoutTypeUnits, useCreateWorkoutType } from '@/features/workout-types/hooks'
 import { useCreateWorkout, useUpdateWorkout } from './hooks'
-import type { DistanceUnit, TrainingWeek, Workout, WorkoutStatus } from '@/types/models'
+import { DistanceUnit } from '@/types/models'
+import type { TrainingWeek, Workout, WorkoutStatus } from '@/types/models'
 
 interface WorkoutFormModalProps {
   isOpen: boolean
@@ -39,7 +40,9 @@ function formFromWorkout(workout: Workout, unit: DistanceUnit | null) {
     time: workout.scheduled_start.slice(11, 16),
     planned_duration: workout.planned_duration != null ? String(workout.planned_duration) : '',
     planned_distance:
-      workout.planned_distance != null ? String(convertMetersTo(workout.planned_distance, unit ?? 'm')) : '',
+      workout.planned_distance != null
+        ? String(convertMetersTo(workout.planned_distance, unit ?? DistanceUnit.M))
+        : '',
     status: workout.status,
   }
 }
@@ -69,7 +72,7 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
   const [newTypeName, setNewTypeName] = useState('')
 
   const resolvedUnit = workoutTypeUnitById[Number(form.workout_type_id)] ?? null
-  const distanceUnitLabel = resolvedUnit ?? 'm'
+  const distanceUnitLabel = resolvedUnit ?? DistanceUnit.M
   const hasDistance = resolvedUnit !== null
 
   function handleClose() {
@@ -99,7 +102,7 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
       planned_duration: form.planned_duration ? Number(form.planned_duration) : null,
       planned_distance:
         hasDistance && form.planned_distance
-          ? convertToMeters(Number(form.planned_distance), resolvedUnit ?? 'm')
+          ? convertToMeters(Number(form.planned_distance), resolvedUnit ?? DistanceUnit.M)
           : null,
       status: form.status,
     }

@@ -1,7 +1,7 @@
 import { Select } from '@/components/ui/Select'
-import type { DistanceUnit } from '@/types/models'
+import { DistanceUnit } from '@/types/models'
 
-const UNIT_OPTIONS: DistanceUnit[] = ['km', 'mi', 'm', 'yd']
+const UNIT_OPTIONS = Object.values(DistanceUnit)
 
 interface WorkoutTypeUnitRowProps {
   workoutTypeName: string

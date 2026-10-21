@@ -4,7 +4,18 @@ export type TrainingBlockStatus = 'planned' | 'active' | 'completed' | 'archived
 
 export type WorkoutStatus = 'planned' | 'completed' | 'skipped'
 
-export type DistanceUnit = 'km' | 'mi' | 'm' | 'yd'
+// Mirrors api/app/models/workout.py's DistanceUnit(str, enum.Enum) — keep both in sync.
+// A plain `enum` isn't usable here (this project's tsconfig has
+// erasableSyntaxOnly on), so this is the standard erasable replacement: a
+// const object for the values, plus a derived union type of the same name.
+export const DistanceUnit = {
+  Km: 'km',
+  Mi: 'mi',
+  M: 'm',
+  Yd: 'yd',
+} as const
+
+export type DistanceUnit = (typeof DistanceUnit)[keyof typeof DistanceUnit]
 
 export interface User {
   id: number

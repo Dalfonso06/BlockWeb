@@ -8,7 +8,8 @@ import {
   useResetUnitPreferences,
 } from '@/features/unit-preferences/hooks'
 import { WorkoutTypeUnitRow } from './WorkoutTypeUnitRow'
-import type { DistanceUnit, WorkoutType } from '@/types/models'
+import { DistanceUnit } from '@/types/models'
+import type { WorkoutType } from '@/types/models'
 
 export function PreferencesTab() {
   const { data: workoutTypes, isLoading: isLoadingWorkoutTypes } = useWorkoutTypes()
@@ -73,7 +74,7 @@ export function PreferencesTab() {
         <div className="mt-3 divide-y divide-neutral-100 dark:divide-neutral-900">
           {unitTrackedWorkoutTypes.map((workoutType) => {
             const preference = preferenceByTypeId[workoutType.id]
-            const unit = preference?.unit ?? workoutType.default_unit ?? 'm'
+            const unit = preference?.unit ?? workoutType.default_unit ?? DistanceUnit.M
 
             return (
               <WorkoutTypeUnitRow
