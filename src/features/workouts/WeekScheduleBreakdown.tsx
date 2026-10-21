@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { enumerateDates, toDateKey } from '@/lib/date'
-import { useWorkoutTypes } from '@/features/workout-types/hooks'
+import { useWorkoutTypes, useWorkoutTypeUnits } from '@/features/workout-types/hooks'
 import { TrainingWeekHeader } from '@/features/training-weeks/TrainingWeekHeader'
 import { useTrainingWeekBreakdown } from '@/features/training-weeks/hooks'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
@@ -23,16 +23,24 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
 
   const { data: workouts, isLoading: isLoadingWorkouts } = useWorkouts(week.id)
   const { data: workoutTypes, isLoading: isLoadingWorkoutTypes } = useWorkoutTypes()
+  const { data: workoutTypeUnits, isLoading: isLoadingWorkoutTypeUnits } = useWorkoutTypeUnits()
   const { data: breakdown, isLoading: isLoadingBreakdown } = useTrainingWeekBreakdown(week.id)
   const deleteWorkout = useDeleteWorkout(week.id)
   const updateWorkoutStatus = useUpdateWorkoutStatus(week.id)
 
-  if (isLoadingWorkouts || isLoadingWorkoutTypes || isLoadingBreakdown) {
+  if (isLoadingWorkouts || isLoadingWorkoutTypes || isLoadingWorkoutTypeUnits || isLoadingBreakdown) {
     return <p className="text-sm text-neutral-500">Loading…</p>
   }
 
   const workoutTypeNameById = Object.fromEntries(
     (workoutTypes ?? []).map((workoutType) => [workoutType.id, workoutType.name]),
+  )
+
+  const workoutTypeUnitById = Object.fromEntries(
+    (workoutTypeUnits ?? []).map((workoutType) => [workoutType.id, workoutType.unit]),
+  )
+  const workoutTypeUnitByName = Object.fromEntries(
+    (workoutTypeUnits ?? []).map((workoutType) => [workoutType.name, workoutType.unit]),
   )
 
   const workoutsByDate = new Map<string, Workout[]>()
@@ -78,6 +86,7 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
                 date={date}
                 workouts={workoutsByDate.get(date) ?? []}
                 workoutTypeNameById={workoutTypeNameById}
+                workoutTypeUnitById={workoutTypeUnitById}
                 onAddWorkout={(d) => setWorkoutModalState({ mode: 'add', date: d })}
                 onEditWorkout={(workout) => setWorkoutModalState({ mode: 'edit', workout })}
                 onDeleteWorkout={(workout) => setDeletingWorkout(workout)}
@@ -90,6 +99,7 @@ export function WeekScheduleBreakdown({ week }: WeekScheduleBreakdownProps) {
         <div className="sticky top-4 flex w-64 shrink-0 flex-col gap-4 self-start">
           <WeekTypeBreakdown
             workoutTypes={breakdown?.workout_types ?? []}
+            workoutTypeUnitByName={workoutTypeUnitByName}
             totalMinutes={breakdown?.total_planned_duration_minutes ?? 0}
           />
           <WeekQuickActions onAddWorkout={() => setWorkoutModalState({ mode: 'add' })} />

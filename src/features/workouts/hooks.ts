@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { trainingWeekKeys } from '@/features/training-weeks/hooks'
 import * as workoutsApi from './api'
-import type { WorkoutStatus } from '@/types/models'
+import type { WorkoutStatus } from '@/types/enums'
 import type { WorkoutCreate, WorkoutUpdate } from './types'
 
 export const workoutKeys = {

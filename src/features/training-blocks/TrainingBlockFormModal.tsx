@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { FormModal } from '@/components/ui/FormModal'
+import { Select } from '@/components/ui/Select'
 import { ApiError } from '@/api/client'
-import type { TrainingBlock, TrainingBlockStatus } from '@/types/models'
+import type { TrainingBlock } from '@/types/models'
+import { TrainingBlockStatus } from '@/types/enums'
 import { useCreateTrainingBlock, useUpdateTrainingBlock } from './hooks'
 
 interface TrainingBlockFormModalProps {
@@ -10,14 +12,14 @@ interface TrainingBlockFormModalProps {
   trainingBlock?: TrainingBlock | null
 }
 
-const STATUS_OPTIONS: TrainingBlockStatus[] = ['planned', 'active', 'completed', 'archived']
+const STATUS_OPTIONS = Object.values(TrainingBlockStatus)
 
 const emptyForm = {
   name: '',
   description: '',
   start_date: '',
   end_date: '',
-  status: 'planned' as TrainingBlockStatus,
+  status: TrainingBlockStatus.Planned,
 }
 
 function formFromTrainingBlock(trainingBlock: TrainingBlock) {
@@ -138,18 +140,17 @@ export function TrainingBlockFormModal({ isOpen, onClose, trainingBlock = null }
           <label htmlFor="block-status" className="text-sm">
             Status
           </label>
-          <select
+          <Select
             id="block-status"
             value={form.status}
             onChange={(e) => setForm({ ...form, status: e.target.value as TrainingBlockStatus })}
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
           >
             {STATUS_OPTIONS.map((status) => (
               <option key={status} value={status}>
                 {status[0].toUpperCase() + status.slice(1)}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       </div>
     </FormModal>

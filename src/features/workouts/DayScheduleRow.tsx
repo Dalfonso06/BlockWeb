@@ -1,12 +1,14 @@
 import { formatMonthDay, formatWeekday } from '@/lib/date'
 import { AddIcon } from '@/icons'
 import { WorkoutSummary } from './WorkoutSummary'
-import type { Workout, WorkoutStatus } from '@/types/models'
+import type { Workout } from '@/types/models'
+import type { DistanceUnit, WorkoutStatus } from '@/types/enums'
 
 interface DayScheduleRowProps {
   date: string
   workouts: Workout[]
   workoutTypeNameById: Record<number, string>
+  workoutTypeUnitById: Record<number, DistanceUnit | null>
   onAddWorkout: (date: string) => void
   onEditWorkout: (workout: Workout) => void
   onDeleteWorkout: (workout: Workout) => void
@@ -17,6 +19,7 @@ export function DayScheduleRow({
   date,
   workouts,
   workoutTypeNameById,
+  workoutTypeUnitById,
   onAddWorkout,
   onEditWorkout,
   onDeleteWorkout,
@@ -51,6 +54,7 @@ export function DayScheduleRow({
                   key={workout.id}
                   workout={workout}
                   workoutTypeName={workoutTypeNameById[workout.workout_type_id] ?? 'Workout'}
+                  unit={workoutTypeUnitById[workout.workout_type_id] ?? null}
                   onEdit={() => onEditWorkout(workout)}
                   onDelete={() => onDeleteWorkout(workout)}
                   onUpdateStatus={(status) => onUpdateWorkoutStatus(workout, status)}

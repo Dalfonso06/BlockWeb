@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { FormModal } from '@/components/ui/FormModal'
 import { Button } from '@/components/ui/Button'
+import { Select } from '@/components/ui/Select'
 import { ApiError } from '@/api/client'
 import { enumerateDates, formatMonthDay, formatWeekday } from '@/lib/date'
-import { useWorkoutTypes, useCreateWorkoutType } from '@/features/workout-types/hooks'
+import { convertMetersTo, convertToMeters } from '@/lib/distance'
+import { useWorkoutTypes, useWorkoutTypeUnits, useCreateWorkoutType } from '@/features/workout-types/hooks'
 import { useCreateWorkout, useUpdateWorkout } from './hooks'
-import type { DistanceUnit, TrainingWeek, Workout, WorkoutStatus } from '@/types/models'
+import { DistanceUnit, WorkoutStatus } from '@/types/enums'
+import type { TrainingWeek, Workout } from '@/types/models'
 
 interface WorkoutFormModalProps {
   isOpen: boolean
@@ -15,8 +18,7 @@ interface WorkoutFormModalProps {
   date?: string
 }
 
-const STATUS_OPTIONS: WorkoutStatus[] = ['planned', 'completed', 'skipped']
-const UNIT_OPTIONS: DistanceUnit[] = ['km', 'mi', 'm', 'yd']
+const STATUS_OPTIONS = Object.values(WorkoutStatus)
 
 function emptyForm(date: string) {
   return {
@@ -26,20 +28,21 @@ function emptyForm(date: string) {
     time: '',
     planned_duration: '',
     planned_distance: '',
-    unit: '' as DistanceUnit | '',
-    status: 'planned' as WorkoutStatus,
+    status: WorkoutStatus.Planned,
   }
 }
 
-function formFromWorkout(workout: Workout) {
+function formFromWorkout(workout: Workout, unit: DistanceUnit | null) {
   return {
     workout_type_id: String(workout.workout_type_id),
     title: workout.title,
     date: workout.scheduled_start.slice(0, 10),
     time: workout.scheduled_start.slice(11, 16),
     planned_duration: workout.planned_duration != null ? String(workout.planned_duration) : '',
-    planned_distance: workout.planned_distance != null ? String(workout.planned_distance) : '',
-    unit: workout.unit ?? ('' as DistanceUnit | ''),
+    planned_distance:
+      workout.planned_distance != null
+        ? String(convertMetersTo(workout.planned_distance, unit ?? DistanceUnit.M))
+        : '',
     status: workout.status,
   }
 }
@@ -47,16 +50,30 @@ function formFromWorkout(workout: Workout) {
 export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }: WorkoutFormModalProps) {
   const isEditing = workout !== null
   const isDateLocked = !isEditing && date !== undefined
-  const [form, setForm] = useState(workout ? formFromWorkout(workout) : emptyForm(date ?? week.start_date))
+
+  const dayOptions = enumerateDates(week.start_date, week.end_date)
+  const { data: workoutTypes } = useWorkoutTypes()
+  const { data: workoutTypeUnits } = useWorkoutTypeUnits()
+  const createWorkoutType = useCreateWorkoutType()
+  const createWorkout = useCreateWorkout(week.id)
+  const updateWorkout = useUpdateWorkout(workout?.id ?? -1, week.id)
+
+  const workoutTypeUnitById = Object.fromEntries(
+    (workoutTypeUnits ?? []).map((workoutType) => [workoutType.id, workoutType.unit]),
+  )
+
+  const [form, setForm] = useState(() =>
+    workout
+      ? formFromWorkout(workout, workoutTypeUnitById[workout.workout_type_id] ?? null)
+      : emptyForm(date ?? week.start_date),
+  )
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isAddingType, setIsAddingType] = useState(false)
   const [newTypeName, setNewTypeName] = useState('')
 
-  const dayOptions = enumerateDates(week.start_date, week.end_date)
-  const { data: workoutTypes } = useWorkoutTypes()
-  const createWorkoutType = useCreateWorkoutType()
-  const createWorkout = useCreateWorkout(week.id)
-  const updateWorkout = useUpdateWorkout(workout?.id ?? -1, week.id)
+  const resolvedUnit = workoutTypeUnitById[Number(form.workout_type_id)] ?? null
+  const distanceUnitLabel = resolvedUnit ?? DistanceUnit.M
+  const hasDistance = resolvedUnit !== null
 
   function handleClose() {
     setSubmitError(null)
@@ -83,8 +100,10 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
       scheduled_start: `${form.date}T${form.time}:00`,
       title: form.title,
       planned_duration: form.planned_duration ? Number(form.planned_duration) : null,
-      planned_distance: form.planned_distance ? Number(form.planned_distance) : null,
-      unit: form.unit || null,
+      planned_distance:
+        hasDistance && form.planned_distance
+          ? convertToMeters(Number(form.planned_distance), resolvedUnit ?? DistanceUnit.M)
+          : null,
       status: form.status,
     }
 
@@ -120,12 +139,12 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
           </label>
           {!isAddingType ? (
             <div className="flex gap-2">
-              <select
+              <Select
                 id="workout-type"
                 value={form.workout_type_id}
                 onChange={(e) => setForm({ ...form, workout_type_id: e.target.value })}
                 required
-                className="flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+                className="flex-1"
               >
                 <option value="" disabled>
                   Select a type
@@ -135,7 +154,7 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
                     {type.name}
                   </option>
                 ))}
-              </select>
+              </Select>
               <Button type="button" variant="secondary" onClick={() => setIsAddingType(true)}>
                 + New
               </Button>
@@ -178,19 +197,18 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
               <label htmlFor="workout-date" className="text-sm">
                 Day
               </label>
-              <select
+              <Select
                 id="workout-date"
                 value={form.date}
                 onChange={(e) => setForm({ ...form, date: e.target.value })}
                 required
-                className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
               >
                 {dayOptions.map((d) => (
                   <option key={d} value={d}>
                     {formatWeekday(d)}, {formatMonthDay(d)}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           )}
 
@@ -228,25 +246,24 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
             <label htmlFor="workout-status" className="text-sm">
               Status
             </label>
-            <select
+            <Select
               id="workout-status"
               value={form.status}
               onChange={(e) => setForm({ ...form, status: e.target.value as WorkoutStatus })}
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
             >
               {STATUS_OPTIONS.map((status) => (
                 <option key={status} value={status}>
                   {status[0].toUpperCase() + status.slice(1)}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        {hasDistance && (
           <div className="space-y-1">
             <label htmlFor="workout-distance" className="text-sm">
-              Distance
+              Distance ({distanceUnitLabel})
             </label>
             <input
               id="workout-distance"
@@ -258,26 +275,7 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
               className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
             />
           </div>
-
-          <div className="space-y-1">
-            <label htmlFor="workout-unit" className="text-sm">
-              Unit
-            </label>
-            <select
-              id="workout-unit"
-              value={form.unit}
-              onChange={(e) => setForm({ ...form, unit: e.target.value as DistanceUnit | '' })}
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
-            >
-              <option value="">—</option>
-              {UNIT_OPTIONS.map((unit) => (
-                <option key={unit} value={unit}>
-                  {unit}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        )}
       </div>
     </FormModal>
   )

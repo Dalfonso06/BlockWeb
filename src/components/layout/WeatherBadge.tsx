@@ -1,5 +1,5 @@
 import { useCurrentWeather } from '@/features/weather/hooks'
-import type { WeatherCondition } from '@/types/models'
+import type { WeatherCondition } from '@/types/enums'
 import type { IconComponent } from '@/icons'
 import {
   WeatherClearIcon,

@@ -1,6 +1,6 @@
 import { request } from '@/api/client'
 import type { WorkoutType } from '@/types/models'
-import type { WorkoutTypeCreate, WorkoutTypeUpdate } from './types'
+import type { WorkoutTypeCreate, WorkoutTypeUnitSummary, WorkoutTypeUpdate } from './types'
 
 export function listWorkoutTypes(): Promise<WorkoutType[]> {
   return request<WorkoutType[]>('/workout-types/')
@@ -20,4 +20,8 @@ export function updateWorkoutType(id: number, payload: WorkoutTypeUpdate): Promi
 
 export function deleteWorkoutType(id: number): Promise<void> {
   return request<void>(`/workout-types/${id}`, { method: 'DELETE' })
+}
+
+export function getWorkoutTypeUnits(): Promise<WorkoutTypeUnitSummary[]> {
+  return request<WorkoutTypeUnitSummary[]>('/users/me/workout-type-units')
 }

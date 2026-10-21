@@ -1,15 +1,18 @@
 import { Fragment } from 'react'
 import { formatDuration } from '@/lib/date'
+import { formatDistance } from '@/lib/distance'
 import { ChartIcon, ClockIcon } from '@/icons'
 import { getWorkoutTypeColor } from '@/features/workout-types/workoutTypeColors'
 import type { WorkoutTypeBreakdownItem } from '@/features/training-weeks/types'
+import type { DistanceUnit } from '@/types/enums'
 
 interface WeekTypeBreakdownProps {
   workoutTypes: WorkoutTypeBreakdownItem[]
+  workoutTypeUnitByName: Record<string, DistanceUnit | null>
   totalMinutes: number
 }
 
-export function WeekTypeBreakdown({ workoutTypes, totalMinutes }: WeekTypeBreakdownProps) {
+export function WeekTypeBreakdown({ workoutTypes, workoutTypeUnitByName, totalMinutes }: WeekTypeBreakdownProps) {
   return (
     <div className="rounded-md border border-neutral-200 p-4 dark:border-neutral-800">
       <h3 className="flex items-center gap-2 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
@@ -30,7 +33,9 @@ export function WeekTypeBreakdown({ workoutTypes, totalMinutes }: WeekTypeBreakd
                 <span className="font-medium text-neutral-500 dark:text-neutral-100">{item.workout_type}</span>
                 <span className="text-right text-neutral-500">{formatDuration(item.duration_sum)}</span>
                 <span className="pl-3 text-right text-neutral-500">
-                  {item.distance != null ? `${item.distance}${item.unit ?? ''}` : ''}
+                  {item.distance != null
+                    ? formatDistance(item.distance, workoutTypeUnitByName[item.workout_type] ?? item.unit)
+                    : ''}
                 </span>
               </Fragment>
             ))}

@@ -1,4 +1,4 @@
-import type { DistanceUnit } from '@/types/models'
+import type { DistanceUnit } from '@/types/enums'
 
 export interface TrainingWeekCreate {
   training_block_id: number

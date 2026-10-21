@@ -1,10 +1,7 @@
 // Mirrors api/app/schemas/*.py response models. Keep in sync with the backend.
+// Enum-like fields are defined in ./enums.ts, not here.
 
-export type TrainingBlockStatus = 'planned' | 'active' | 'completed' | 'archived'
-
-export type WorkoutStatus = 'planned' | 'completed' | 'skipped'
-
-export type DistanceUnit = 'km' | 'mi' | 'm' | 'yd'
+import type { TrainingBlockStatus, WorkoutStatus, DistanceUnit, WeatherCondition } from './enums'
 
 export interface User {
   id: number
@@ -50,7 +47,6 @@ export interface Workout {
   description: string | null
   planned_duration: number | null
   planned_distance: number | null
-  unit: DistanceUnit | null
   status: WorkoutStatus
   completed_at: string | null
   notes: string | null
@@ -61,17 +57,8 @@ export interface Workout {
 export interface WorkoutType {
   id: number
   name: string
+  default_unit: DistanceUnit | null
 }
-
-export type WeatherCondition =
-  | 'clear'
-  | 'partly_cloudy'
-  | 'cloudy'
-  | 'fog'
-  | 'drizzle'
-  | 'rain'
-  | 'snow'
-  | 'thunderstorm'
 
 export interface Weather {
   latitude: number
