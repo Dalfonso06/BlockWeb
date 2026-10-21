@@ -1,21 +1,7 @@
 // Mirrors api/app/schemas/*.py response models. Keep in sync with the backend.
+// Enum-like fields are defined in ./enums.ts, not here.
 
-export type TrainingBlockStatus = 'planned' | 'active' | 'completed' | 'archived'
-
-export type WorkoutStatus = 'planned' | 'completed' | 'skipped'
-
-// Mirrors api/app/models/workout.py's DistanceUnit(str, enum.Enum) — keep both in sync.
-// A plain `enum` isn't usable here (this project's tsconfig has
-// erasableSyntaxOnly on), so this is the standard erasable replacement: a
-// const object for the values, plus a derived union type of the same name.
-export const DistanceUnit = {
-  Km: 'km',
-  Mi: 'mi',
-  M: 'm',
-  Yd: 'yd',
-} as const
-
-export type DistanceUnit = (typeof DistanceUnit)[keyof typeof DistanceUnit]
+import type { TrainingBlockStatus, WorkoutStatus, DistanceUnit, WeatherCondition } from './enums'
 
 export interface User {
   id: number
@@ -73,16 +59,6 @@ export interface WorkoutType {
   name: string
   default_unit: DistanceUnit | null
 }
-
-export type WeatherCondition =
-  | 'clear'
-  | 'partly_cloudy'
-  | 'cloudy'
-  | 'fog'
-  | 'drizzle'
-  | 'rain'
-  | 'snow'
-  | 'thunderstorm'
 
 export interface Weather {
   latitude: number

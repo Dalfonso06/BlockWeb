@@ -1,5 +1,5 @@
 import { Select } from '@/components/ui/Select'
-import { DistanceUnit } from '@/types/models'
+import { DistanceUnit } from '@/types/enums'
 
 const UNIT_OPTIONS = Object.values(DistanceUnit)
 

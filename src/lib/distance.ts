@@ -1,4 +1,4 @@
-import { DistanceUnit } from '@/types/models'
+import { DistanceUnit } from '@/types/enums'
 
 const METERS_PER_UNIT: Record<DistanceUnit, number> = {
   [DistanceUnit.M]: 1,

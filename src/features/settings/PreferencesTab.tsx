@@ -8,7 +8,7 @@ import {
   useResetUnitPreferences,
 } from '@/features/unit-preferences/hooks'
 import { WorkoutTypeUnitRow } from './WorkoutTypeUnitRow'
-import { DistanceUnit } from '@/types/models'
+import { DistanceUnit } from '@/types/enums'
 import type { WorkoutType } from '@/types/models'
 
 export function PreferencesTab() {

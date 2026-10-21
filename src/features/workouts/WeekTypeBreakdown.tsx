@@ -4,7 +4,7 @@ import { formatDistance } from '@/lib/distance'
 import { ChartIcon, ClockIcon } from '@/icons'
 import { getWorkoutTypeColor } from '@/features/workout-types/workoutTypeColors'
 import type { WorkoutTypeBreakdownItem } from '@/features/training-weeks/types'
-import type { DistanceUnit } from '@/types/models'
+import type { DistanceUnit } from '@/types/enums'
 
 interface WeekTypeBreakdownProps {
   workoutTypes: WorkoutTypeBreakdownItem[]

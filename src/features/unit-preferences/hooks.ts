@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { workoutTypeUnitKeys } from '@/features/workout-types/hooks'
 import * as unitPreferencesApi from './api'
-import type { DistanceUnit } from '@/types/models'
+import type { DistanceUnit } from '@/types/enums'
 
 export const unitPreferenceKeys = {
   all: ['unit-preferences'] as const,

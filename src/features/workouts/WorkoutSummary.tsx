@@ -3,7 +3,8 @@ import { formatDistance } from '@/lib/distance'
 import { ActionMenu } from '@/components/ui/ActionMenu'
 import { CheckIcon, CircleIcon, MinusIcon } from '@/icons'
 import { getWorkoutTypeColor } from '@/features/workout-types/workoutTypeColors'
-import type { DistanceUnit, Workout, WorkoutStatus } from '@/types/models'
+import type { Workout } from '@/types/models'
+import type { DistanceUnit, WorkoutStatus } from '@/types/enums'
 
 interface WorkoutSummaryProps {
   workout: Workout

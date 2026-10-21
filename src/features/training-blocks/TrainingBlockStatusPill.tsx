@@ -1,5 +1,5 @@
 import { Pill, type PillColor } from '@/components/ui/Pill'
-import type { TrainingBlockStatus } from '@/types/models'
+import type { TrainingBlockStatus } from '@/types/enums'
 
 interface TrainingBlockStatusPillProps {
   status: TrainingBlockStatus

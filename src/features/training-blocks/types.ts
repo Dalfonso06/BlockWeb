@@ -1,4 +1,4 @@
-import type { TrainingBlockStatus } from '@/types/models'
+import type { TrainingBlockStatus } from '@/types/enums'
 
 export interface TrainingBlockCreate {
   name: string

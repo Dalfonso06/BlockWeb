@@ -1,4 +1,4 @@
-import type { WorkoutStatus } from '@/types/models'
+import type { WorkoutStatus } from '@/types/enums'
 
 export interface WorkoutCreate {
   training_week_id: number

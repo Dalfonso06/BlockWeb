@@ -7,8 +7,8 @@ import { enumerateDates, formatMonthDay, formatWeekday } from '@/lib/date'
 import { convertMetersTo, convertToMeters } from '@/lib/distance'
 import { useWorkoutTypes, useWorkoutTypeUnits, useCreateWorkoutType } from '@/features/workout-types/hooks'
 import { useCreateWorkout, useUpdateWorkout } from './hooks'
-import { DistanceUnit } from '@/types/models'
-import type { TrainingWeek, Workout, WorkoutStatus } from '@/types/models'
+import { DistanceUnit, WorkoutStatus } from '@/types/enums'
+import type { TrainingWeek, Workout } from '@/types/models'
 
 interface WorkoutFormModalProps {
   isOpen: boolean
@@ -18,7 +18,7 @@ interface WorkoutFormModalProps {
   date?: string
 }
 
-const STATUS_OPTIONS: WorkoutStatus[] = ['planned', 'completed', 'skipped']
+const STATUS_OPTIONS = Object.values(WorkoutStatus)
 
 function emptyForm(date: string) {
   return {
@@ -28,7 +28,7 @@ function emptyForm(date: string) {
     time: '',
     planned_duration: '',
     planned_distance: '',
-    status: 'planned' as WorkoutStatus,
+    status: WorkoutStatus.Planned,
   }
 }
 

@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { FormModal } from '@/components/ui/FormModal'
 import { Select } from '@/components/ui/Select'
 import { ApiError } from '@/api/client'
-import type { TrainingBlock, TrainingBlockStatus } from '@/types/models'
+import type { TrainingBlock } from '@/types/models'
+import { TrainingBlockStatus } from '@/types/enums'
 import { useCreateTrainingBlock, useUpdateTrainingBlock } from './hooks'
 
 interface TrainingBlockFormModalProps {
@@ -11,14 +12,14 @@ interface TrainingBlockFormModalProps {
   trainingBlock?: TrainingBlock | null
 }
 
-const STATUS_OPTIONS: TrainingBlockStatus[] = ['planned', 'active', 'completed', 'archived']
+const STATUS_OPTIONS = Object.values(TrainingBlockStatus)
 
 const emptyForm = {
   name: '',
   description: '',
   start_date: '',
   end_date: '',
-  status: 'planned' as TrainingBlockStatus,
+  status: TrainingBlockStatus.Planned,
 }
 
 function formFromTrainingBlock(trainingBlock: TrainingBlock) {

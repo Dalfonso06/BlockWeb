@@ -1,7 +1,8 @@
 import { formatMonthDay, formatWeekday } from '@/lib/date'
 import { AddIcon } from '@/icons'
 import { WorkoutSummary } from './WorkoutSummary'
-import type { DistanceUnit, Workout, WorkoutStatus } from '@/types/models'
+import type { Workout } from '@/types/models'
+import type { DistanceUnit, WorkoutStatus } from '@/types/enums'
 
 interface DayScheduleRowProps {
   date: string
