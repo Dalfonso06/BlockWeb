@@ -9,6 +9,8 @@ interface DayScheduleRowProps {
   workouts: Workout[]
   workoutTypeNameById: Record<number, string>
   workoutTypeUnitById: Record<number, DistanceUnit | null>
+  selectedWorkoutId: number | null
+  onSelectWorkout: (workout: Workout) => void
   onAddWorkout: (date: string) => void
   onEditWorkout: (workout: Workout) => void
   onDeleteWorkout: (workout: Workout) => void
@@ -20,6 +22,8 @@ export function DayScheduleRow({
   workouts,
   workoutTypeNameById,
   workoutTypeUnitById,
+  selectedWorkoutId,
+  onSelectWorkout,
   onAddWorkout,
   onEditWorkout,
   onDeleteWorkout,
@@ -55,6 +59,8 @@ export function DayScheduleRow({
                   workout={workout}
                   workoutTypeName={workoutTypeNameById[workout.workout_type_id] ?? 'Workout'}
                   unit={workoutTypeUnitById[workout.workout_type_id] ?? null}
+                  isSelected={workout.id === selectedWorkoutId}
+                  onSelect={() => onSelectWorkout(workout)}
                   onEdit={() => onEditWorkout(workout)}
                   onDelete={() => onDeleteWorkout(workout)}
                   onUpdateStatus={(status) => onUpdateWorkoutStatus(workout, status)}

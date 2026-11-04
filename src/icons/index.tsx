@@ -21,13 +21,17 @@ import {
 } from 'react-icons/fa6'
 
 import clearSvg from '@meteocons/svg-static/fill/clear-day.svg?raw'
+import clearNightSvg from '@meteocons/svg-static/fill/clear-night.svg?raw'
 import partlyCloudySvg from '@meteocons/svg-static/fill/partly-cloudy-day.svg?raw'
+import partlyCloudyNightSvg from '@meteocons/svg-static/fill/partly-cloudy-night.svg?raw'
 import cloudySvg from '@meteocons/svg-static/fill/cloudy.svg?raw'
-import fogSvg from '@meteocons/svg-static/fill/fog.svg?raw'
+import fogSvg from '@meteocons/svg-static/fill/fog-day.svg?raw'
+import fogNightSvg from '@meteocons/svg-static/fill/fog-night.svg?raw'
 import drizzleSvg from '@meteocons/svg-static/fill/drizzle.svg?raw'
 import rainSvg from '@meteocons/svg-static/fill/rain.svg?raw'
 import snowSvg from '@meteocons/svg-static/fill/snow.svg?raw'
-import thunderstormSvg from '@meteocons/svg-static/fill/thunderstorms.svg?raw'
+import thunderstormSvg from '@meteocons/svg-static/fill/thunderstorms-day.svg?raw'
+import thunderstormNightSvg from '@meteocons/svg-static/fill/thunderstorms-night.svg?raw'
 
 // Central icon registry: every icon the app uses is named here once, by what
 // it means in the UI rather than which icon-set glyph it happens to be.
@@ -78,10 +82,14 @@ function createStaticIcon(svgMarkup: string): IconComponent {
 }
 
 export const WeatherClearIcon: IconComponent = createStaticIcon(clearSvg)
+export const WeatherClearNightIcon: IconComponent = createStaticIcon(clearNightSvg)
 export const WeatherPartlyCloudyIcon: IconComponent = createStaticIcon(partlyCloudySvg)
+export const WeatherPartlyCloudyNightIcon: IconComponent = createStaticIcon(partlyCloudyNightSvg)
 export const WeatherCloudyIcon: IconComponent = createStaticIcon(cloudySvg)
 export const WeatherFogIcon: IconComponent = createStaticIcon(fogSvg)
+export const WeatherFogNightIcon: IconComponent = createStaticIcon(fogNightSvg)
 export const WeatherDrizzleIcon: IconComponent = createStaticIcon(drizzleSvg)
 export const WeatherRainIcon: IconComponent = createStaticIcon(rainSvg)
 export const WeatherSnowIcon: IconComponent = createStaticIcon(snowSvg)
 export const WeatherThunderstormIcon: IconComponent = createStaticIcon(thunderstormSvg)
+export const WeatherThunderstormNightIcon: IconComponent = createStaticIcon(thunderstormNightSvg)

@@ -29,6 +29,7 @@ function emptyForm(date: string) {
     planned_duration: '',
     planned_distance: '',
     status: WorkoutStatus.Planned,
+    notes: '',
   }
 }
 
@@ -44,6 +45,7 @@ function formFromWorkout(workout: Workout, unit: DistanceUnit | null) {
         ? String(convertMetersTo(workout.planned_distance, unit ?? DistanceUnit.M))
         : '',
     status: workout.status,
+    notes: workout.notes ?? '',
   }
 }
 
@@ -105,6 +107,7 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
           ? convertToMeters(Number(form.planned_distance), resolvedUnit ?? DistanceUnit.M)
           : null,
       status: form.status,
+      notes: form.notes.trim() ? form.notes.trim() : null,
     }
 
     try {
@@ -276,6 +279,19 @@ export function WorkoutFormModal({ isOpen, onClose, week, workout = null, date }
             />
           </div>
         )}
+
+        <div className="space-y-1">
+          <label htmlFor="workout-notes" className="text-sm">
+            Notes
+          </label>
+          <textarea
+            id="workout-notes"
+            value={form.notes}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+            rows={2}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+          />
+        </div>
       </div>
     </FormModal>
   )

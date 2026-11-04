@@ -6,10 +6,19 @@ import { getWorkoutTypeColor } from '@/features/workout-types/workoutTypeColors'
 import type { Workout } from '@/types/models'
 import type { DistanceUnit, WorkoutStatus } from '@/types/enums'
 
+const NOTES_PREVIEW_WORD_LIMIT = 10
+
+function truncateWords(text: string, limit: number): string {
+  const words = text.split(/\s+/)
+  return words.length <= limit ? text : `${words.slice(0, limit).join(' ')}…`
+}
+
 interface WorkoutSummaryProps {
   workout: Workout
   workoutTypeName: string
   unit: DistanceUnit | null
+  isSelected?: boolean
+  onSelect?: () => void
   onEdit?: () => void
   onDelete?: () => void
   onUpdateStatus?: (status: WorkoutStatus) => void
@@ -19,6 +28,8 @@ export function WorkoutSummary({
   workout,
   workoutTypeName,
   unit,
+  isSelected = false,
+  onSelect,
   onEdit,
   onDelete,
   onUpdateStatus,
@@ -28,11 +39,19 @@ export function WorkoutSummary({
   const isSkipped = workout.status === 'skipped'
 
   return (
-    <div className="rounded-md px-3 py-2 text-sm dark:border-neutral-800">
-      <div className="grid grid-cols-[6rem_8rem_6rem_1fr] items-center gap-2">
+    <div
+      onClick={onSelect}
+      className={`rounded-md px-3 py-2 text-sm transition-colors ${
+        isSelected ? 'bg-accent/10' : onSelect ? 'cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800' : ''
+      }`}
+    >
+      <div className="grid grid-cols-[6rem_8rem_6rem_1fr_auto] items-center gap-2">
         <button
           type="button"
-          onClick={() => onUpdateStatus?.(isCompleted ? 'planned' : 'completed')}
+          onClick={(e) => {
+            e.stopPropagation()
+            onUpdateStatus?.(isCompleted ? 'planned' : 'completed')
+          }}
           disabled={!onUpdateStatus || isSkipped}
           aria-label={`Mark ${workout.title} as ${isCompleted ? 'planned' : 'completed'}`}
           aria-pressed={isCompleted}
@@ -60,22 +79,32 @@ export function WorkoutSummary({
           <div className="text-xs text-neutral-500">{formatTime(workout.scheduled_start)}</div>
         </div>
 
+        <div className={`flex h-full items-center overflow-hidden pr-3 ${isSkipped ? 'opacity-50' : ''}`}>
+          {workout.notes && (
+            <p className="line-clamp-1 text-xs text-neutral-500">
+              {truncateWords(workout.notes, NOTES_PREVIEW_WORD_LIMIT)}
+            </p>
+          )}
+        </div>
+
         <div className="flex items-center justify-end gap-4">
           <span className={`text-xs text-neutral-500 ${isSkipped ? 'opacity-50' : ''}`}>{workout.status}</span>
           {(onEdit || onDelete || onUpdateStatus) && (
-            <ActionMenu
-              label={`Actions for ${workout.title}`}
-              actions={[
-                ...(onEdit ? [{ label: 'Edit', onClick: onEdit }] : []),
-                ...(onUpdateStatus && workout.status === 'planned'
-                  ? [{ label: 'Skip', onClick: () => onUpdateStatus('skipped') }]
-                  : []),
-                ...(onUpdateStatus && isSkipped
-                  ? [{ label: 'Restore', onClick: () => onUpdateStatus('planned') }]
-                  : []),
-                ...(onDelete ? [{ label: 'Delete', onClick: onDelete, danger: true }] : []),
-              ]}
-            />
+            <div onClick={(e) => e.stopPropagation()}>
+              <ActionMenu
+                label={`Actions for ${workout.title}`}
+                actions={[
+                  ...(onEdit ? [{ label: 'Edit', onClick: onEdit }] : []),
+                  ...(onUpdateStatus && workout.status === 'planned'
+                    ? [{ label: 'Skip', onClick: () => onUpdateStatus('skipped') }]
+                    : []),
+                  ...(onUpdateStatus && isSkipped
+                    ? [{ label: 'Restore', onClick: () => onUpdateStatus('planned') }]
+                    : []),
+                  ...(onDelete ? [{ label: 'Delete', onClick: onDelete, danger: true }] : []),
+                ]}
+              />
+            </div>
           )}
         </div>
       </div>
