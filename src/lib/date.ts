@@ -71,6 +71,15 @@ export function formatDuration(totalMinutes: number): string {
   return `${hours}h ${minutes}m`
 }
 
+// Approximates whether it's currently nighttime using the local device
+// clock (before 6am or after 6pm). The backend's weather response has no
+// sunrise/sunset data, so this is a rough stand-in rather than a precise
+// per-location day/night boundary.
+export function isNightTime(): boolean {
+  const hour = new Date().getHours()
+  return hour < 6 || hour >= 18
+}
+
 // Formats the time-of-day portion of a full ISO datetime string, e.g. "7:00 AM".
 // Reads the "HH:MM" substring directly rather than parsing a Date, so it
 // reflects the wall-clock time that was entered, independent of any
