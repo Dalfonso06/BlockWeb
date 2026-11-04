@@ -6,6 +6,13 @@ import { getWorkoutTypeColor } from '@/features/workout-types/workoutTypeColors'
 import type { Workout } from '@/types/models'
 import type { DistanceUnit, WorkoutStatus } from '@/types/enums'
 
+const NOTES_PREVIEW_WORD_LIMIT = 10
+
+function truncateWords(text: string, limit: number): string {
+  const words = text.split(/\s+/)
+  return words.length <= limit ? text : `${words.slice(0, limit).join(' ')}…`
+}
+
 interface WorkoutSummaryProps {
   workout: Workout
   workoutTypeName: string
@@ -38,7 +45,7 @@ export function WorkoutSummary({
         isSelected ? 'bg-accent/10' : onSelect ? 'cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800' : ''
       }`}
     >
-      <div className="grid grid-cols-[6rem_8rem_6rem_1fr] items-center gap-2">
+      <div className="grid grid-cols-[6rem_8rem_6rem_1fr_auto] items-center gap-2">
         <button
           type="button"
           onClick={(e) => {
@@ -70,6 +77,14 @@ export function WorkoutSummary({
         <div className={isSkipped ? 'opacity-50' : ''}>
           <div className="font-medium text-neutral-900 dark:text-neutral-100">{distanceLabel}</div>
           <div className="text-xs text-neutral-500">{formatTime(workout.scheduled_start)}</div>
+        </div>
+
+        <div className={`flex h-full items-center overflow-hidden pr-3 ${isSkipped ? 'opacity-50' : ''}`}>
+          {workout.notes && (
+            <p className="line-clamp-1 text-xs text-neutral-500">
+              {truncateWords(workout.notes, NOTES_PREVIEW_WORD_LIMIT)}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center justify-end gap-4">
