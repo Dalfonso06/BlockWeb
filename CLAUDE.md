@@ -47,9 +47,9 @@ Run from the project root:
 - Keep styling localized when possible, but use global design tokens or CSS variables where consistent dashboard theming is needed.
 
 ## Icons
-- General UI icons come from `react-icons/fa6` (Font Awesome 6). Weather condition icons are the one documented exception and come from the Meteocons static icon set instead. Both are routed through the central registry at `src/icons/index.tsx` — never import from `react-icons/fa6`, Meteocons, or any other icon source directly in components, pages, or features.
+- General UI icons come from `react-icons/fa6` (Font Awesome 6). Two documented exceptions use different sources instead: weather condition icons come from the Meteocons static icon set, and workout-type icons come from the Iconoir icon set (`iconoir-react`). All three are routed through the central registry at `src/icons/index.tsx` — never import from `react-icons/fa6`, Meteocons, Iconoir, or any other icon source directly in components, pages, or features.
 - Before adding an icon, check `src/icons/index.tsx` for an existing semantically-named export (e.g. `HomeIcon`, `UserIcon`, `CloseIcon`) that already fits the use case, and reuse it rather than adding a duplicate.
-- If nothing existing fits: general UI icons come from `react-icons/fa6`; icons representing a weather condition (mirroring `WeatherCondition` in `types/models.ts`) come from Meteocons' static set. Add a new semantically-named export in `src/icons/index.tsx` (named for what it means in the UI, not the underlying glyph name), then import and use that new export at the call site.
+- If nothing existing fits: general UI icons come from `react-icons/fa6`; icons representing a weather condition (mirroring `WeatherCondition` in `types/enums.ts`) come from Meteocons' static set; icons representing a workout type come from Iconoir. Add a new semantically-named export in `src/icons/index.tsx` (named for what it means in the UI, not the underlying glyph name), then import and use that new export at the call site.
 - This keeps icon usage swappable from one place — changing icon sets, or replacing a glyph with a hand-rolled SVG later, only ever touches `src/icons/index.tsx`.
 
 ## Code quality expectations

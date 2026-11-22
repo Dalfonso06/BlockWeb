@@ -20,6 +20,15 @@ import {
   FaXmark,
 } from 'react-icons/fa6'
 
+import {
+  Running as RunningIcon,
+  Swimming as SwimmingIcon,
+  Bicycle as BicycleIcon,
+  Walking as WalkingIcon,
+  Yoga as YogaOutlineIcon,
+  Weight as WeightIcon,
+} from 'iconoir-react'
+
 import clearSvg from '@meteocons/svg-static/fill/clear-day.svg?raw'
 import clearNightSvg from '@meteocons/svg-static/fill/clear-night.svg?raw'
 import partlyCloudySvg from '@meteocons/svg-static/fill/partly-cloudy-day.svg?raw'
@@ -93,3 +102,12 @@ export const WeatherRainIcon: IconComponent = createStaticIcon(rainSvg)
 export const WeatherSnowIcon: IconComponent = createStaticIcon(snowSvg)
 export const WeatherThunderstormIcon: IconComponent = createStaticIcon(thunderstormSvg)
 export const WeatherThunderstormNightIcon: IconComponent = createStaticIcon(thunderstormNightSvg)
+
+// Workout-type icons come from Iconoir (https://iconoir.com) instead of
+// react-icons/fa6 — another documented exception (see CLAUDE.md).
+export const WorkoutRunIcon: IconComponent = RunningIcon
+export const WorkoutSwimIcon: IconComponent = SwimmingIcon
+export const WorkoutBikeIcon: IconComponent = BicycleIcon
+export const WorkoutWalkIcon: IconComponent = WalkingIcon
+export const WorkoutYogaIcon: IconComponent = YogaOutlineIcon
+export const WorkoutStrengthIcon: IconComponent = WeightIcon
