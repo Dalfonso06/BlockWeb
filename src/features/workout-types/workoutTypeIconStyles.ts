@@ -16,10 +16,8 @@ interface WorkoutTypeIconStyle {
 }
 
 // Temporary client-side icon/color mapping for common workout type names,
-// matched case-insensitively — mirrors workoutTypeColors.ts's same set of
-// names and color families, kept separate since it pairs each type with an
-// icon rather than a single dot color. Once the backend stores a color
-// and/or icon per workout type, both lookups should be replaced by that.
+// matched case-insensitively. Once the backend stores a color and/or icon
+// per workout type, this lookup should be replaced by that.
 const WORKOUT_TYPE_ICON_STYLES: Record<string, WorkoutTypeIconStyle> = {
   swim: { icon: WorkoutSwimIcon, tint: 'bg-blue-100', iconColor: 'text-blue-600' },
   bike: { icon: WorkoutBikeIcon, tint: 'bg-green-100', iconColor: 'text-green-600' },

@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { formatDuration } from '@/lib/date'
 import { formatDistance } from '@/lib/distance'
 import { ChartIcon, ClockIcon } from '@/icons'
-import { getWorkoutTypeColor } from '@/features/workout-types/workoutTypeColors'
+import { WorkoutTypeIcon } from '@/features/workout-types/WorkoutTypeIcon'
 import type { WorkoutTypeBreakdownItem } from '@/features/training-weeks/types'
 import type { DistanceUnit } from '@/types/enums'
 
@@ -26,10 +26,10 @@ export function WeekTypeBreakdown({ workoutTypes, workoutTypeUnitByName, totalMi
         <>
           <div className="mt-3 border-t border-neutral-200 dark:border-neutral-800" />
 
-          <div className="mt-3 grid grid-cols-[1rem_1fr_auto_auto] items-center gap-x-2 gap-y-3 text-sm">
+          <div className="mt-3 grid grid-cols-[1.5rem_1fr_auto_auto] items-center gap-x-2 gap-y-3 text-sm">
             {workoutTypes.map((item) => (
               <Fragment key={item.workout_type}>
-                <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${getWorkoutTypeColor(item.workout_type)}`} />
+                <WorkoutTypeIcon workoutTypeName={item.workout_type} className="h-6 w-6" />
                 <span className="font-medium text-neutral-500 dark:text-neutral-100">{item.workout_type}</span>
                 <span className="text-right text-neutral-500">{formatDuration(item.duration_sum)}</span>
                 <span className="pl-3 text-right text-neutral-500">

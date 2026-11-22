@@ -26,7 +26,7 @@ import {
   Bicycle as BicycleIcon,
   Walking as WalkingIcon,
   Yoga as YogaOutlineIcon,
-  Weight as WeightIcon,
+  Gym as BarbellIcon,
   Activity as ActivityIcon,
 } from 'iconoir-react'
 
@@ -111,6 +111,6 @@ export const WorkoutSwimIcon: IconComponent = SwimmingIcon
 export const WorkoutBikeIcon: IconComponent = BicycleIcon
 export const WorkoutWalkIcon: IconComponent = WalkingIcon
 export const WorkoutYogaIcon: IconComponent = YogaOutlineIcon
-export const WorkoutStrengthIcon: IconComponent = WeightIcon
+export const WorkoutStrengthIcon: IconComponent = BarbellIcon
 // Fallback for workout type names that don't match a specific icon above.
 export const WorkoutGenericIcon: IconComponent = ActivityIcon

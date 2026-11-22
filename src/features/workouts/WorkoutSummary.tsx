@@ -2,7 +2,7 @@ import { formatTime } from '@/lib/date'
 import { formatDistance } from '@/lib/distance'
 import { ActionMenu } from '@/components/ui/ActionMenu'
 import { CheckIcon, CircleIcon, MinusIcon } from '@/icons'
-import { getWorkoutTypeColor } from '@/features/workout-types/workoutTypeColors'
+import { WorkoutTypeIcon } from '@/features/workout-types/WorkoutTypeIcon'
 import type { Workout } from '@/types/models'
 import type { DistanceUnit, WorkoutStatus } from '@/types/enums'
 
@@ -68,7 +68,7 @@ export function WorkoutSummary({
 
         <div className={isSkipped ? 'opacity-50' : ''}>
           <div className="flex items-center gap-2 font-medium text-neutral-900 dark:text-neutral-100">
-            <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${getWorkoutTypeColor(workoutTypeName)}`} />
+            <WorkoutTypeIcon workoutTypeName={workoutTypeName} className="h-5 w-5" />
             {workoutTypeName}
           </div>
           <div className="text-xs text-neutral-500">{workout.title}</div>
