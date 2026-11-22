@@ -60,7 +60,7 @@ Run from the project root:
 - Favor clarity and maintainability over cleverness when working with training-plan logic.
 
 ## Backend Reference
-A read-only backend subagent is available for frontend development.
+All backend code/behavior must be checked through the `backend-api-inspector` subagent — never read, grep, or run commands directly against the sibling `../api` repo from this session. This keeps the session scoped to the web app directory at all times.
 
 ### When to use it
 Use the backend subagent when frontend work requires:
@@ -71,7 +71,7 @@ Use the backend subagent when frontend work requires:
 - Checking existing backend business logic
 - Determining how frontend features should integrate with the backend
 
-The backend subagent is read-only and should be used for investigation/reference only.
+The backend subagent is read-only and is the *only* sanctioned way to inspect backend code — do not `cd` into `../api` or read its files directly, even for a quick look.
 
 Do not modify backend files as part of frontend work unless explicitly requested.
 
