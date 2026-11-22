@@ -3,6 +3,7 @@ import { formatDistance } from '@/lib/distance'
 import { ActionMenu } from '@/components/ui/ActionMenu'
 import { CheckIcon, CircleIcon, MinusIcon } from '@/icons'
 import { WorkoutTypeIcon } from '@/features/workout-types/WorkoutTypeIcon'
+import { WorkoutStatusPill } from './WorkoutStatusPill'
 import type { Workout } from '@/types/models'
 import type { DistanceUnit, WorkoutStatus } from '@/types/enums'
 
@@ -88,7 +89,7 @@ export function WorkoutSummary({
         </div>
 
         <div className="flex items-center justify-end gap-4">
-          <span className={`text-xs text-neutral-500 ${isSkipped ? 'opacity-50' : ''}`}>{workout.status}</span>
+          <WorkoutStatusPill status={workout.status} />
           {(onEdit || onDelete || onUpdateStatus) && (
             <div onClick={(e) => e.stopPropagation()}>
               <ActionMenu
