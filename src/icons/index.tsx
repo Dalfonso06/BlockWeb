@@ -27,6 +27,7 @@ import {
   Walking as WalkingIcon,
   Yoga as YogaOutlineIcon,
   Weight as WeightIcon,
+  Activity as ActivityIcon,
 } from 'iconoir-react'
 
 import clearSvg from '@meteocons/svg-static/fill/clear-day.svg?raw'
@@ -111,3 +112,5 @@ export const WorkoutBikeIcon: IconComponent = BicycleIcon
 export const WorkoutWalkIcon: IconComponent = WalkingIcon
 export const WorkoutYogaIcon: IconComponent = YogaOutlineIcon
 export const WorkoutStrengthIcon: IconComponent = WeightIcon
+// Fallback for workout type names that don't match a specific icon above.
+export const WorkoutGenericIcon: IconComponent = ActivityIcon
