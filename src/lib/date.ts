@@ -61,6 +61,14 @@ export function toDateKey(isoDateTime: string): string {
   return isoDateTime.slice(0, 10)
 }
 
+// Today's date as "YYYY-MM-DD" in the local timezone. Built from local
+// Date fields rather than `toISOString()`, which converts to UTC and can
+// shift the date by a day in negative-offset timezones.
+export function todayDateKey(): string {
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+}
+
 // Formats a total number of minutes as a short duration, e.g. "3h 45m", "45m", "2h".
 export function formatDuration(totalMinutes: number): string {
   if (totalMinutes <= 0) return '0m'

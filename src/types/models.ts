@@ -66,3 +66,33 @@ export interface Weather {
   temperature: number
   condition: WeatherCondition
 }
+
+export interface Activity {
+  id: number
+  user_id: number
+  workout_type_id: number
+  planned_workout_id: number | null
+  name: string | null
+  started_at: string
+  elapsed_duration_seconds: number
+  moving_duration_seconds: number | null
+  // Confirmed via a live POST /activities/ response that these two are
+  // omitted entirely (not even `null`) when not set, unlike every other
+  // optional field here — so these stay optional rather than `| null`.
+  average_heart_rate?: number
+  max_heart_rate?: number
+  notes: string | null
+  source_id: number
+  external_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Source {
+  id: number
+  key: string
+  name: string
+  is_enabled: boolean
+  created_at: string
+  updated_at: string
+}
